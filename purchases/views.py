@@ -6,15 +6,17 @@ from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from utils.models import Product
 from purchases.forms import ProductPurchaseForm, DayPurchaseForm, PaymentForm
 from django.forms import formset_factory
 from purchases.models import *
 
-class NewPurchaseView(FormView):
+class NewPurchaseView(LoginRequiredMixin, FormView):
     template_name = 'purchases/new_purchase.html'
     form_class = ProductPurchaseForm
+    login_url = '/login/'
     
     def get_initial_data(self):
         products = Product.objects.all()
@@ -130,14 +132,16 @@ class NewPurchaseView(FormView):
     def form_valid(self):
         return HttpResponseRedirect(reverse('purchases:all'))
 
-class DayPurchaseListView(ListView):
+class DayPurchaseListView(LoginRequiredMixin, ListView):
     model = DayPurchase
     template_name = 'purchases/all_purchases.html'
+    login_url = '/login/'
 
 
-class DayPurchaseDetail(DetailView):
+class DayPurchaseDetail(LoginRequiredMixin, DetailView):
     template_name = 'purchases/purchase_detail.html'
     model = DayPurchase
+    login_url = '/login/'
 
     payment_form = PaymentForm()
 

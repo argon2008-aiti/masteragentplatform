@@ -133,5 +133,5 @@ STATICFILES_DIRS = (
 )
 
 import dj_database_url
-
-DATABASES["default"] = dj_database_url.config()
+if os.environ.get('DJANGO_DEVELOPMENT') is None:
+    DATABASES["default"] = dj_database_url.config()
