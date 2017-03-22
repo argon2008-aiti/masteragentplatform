@@ -31,11 +31,11 @@
 		             <img class="logo" src="/static/logo_full.png" alt="master agent logo">
 			</div>
 		    <div id="" class="form-container compact-login-form">
-		    {% if messages %}
+		    {% if form.errors %}
 			<div class="title">
-			    {% for message in messages %}
+			    {% for error in form.errors %}
 			    <div class="alert alert-danger" id="">
-				    <p class='server-message'> {{ message }} </p>
+				    <p class='server-message'>Your Username and Password didn't match any user on MasterAgent!</p>
 			    </div>
 			    {% endfor %}
 			</div>
@@ -47,6 +47,9 @@
 						{{form.username.label}}
 					</label>
 						{% render_field form.username class+="form-control" %}
+						{% if form.errors %}
+						    <script>$("#id_username").addClass("has-error")</script>
+						{% endif %}
 				</div>
 
 				<div class="form-group">
@@ -54,6 +57,9 @@
 						{{form.password.label}}
 					</label>
 						{% render_field form.password class+="form-control"%}
+						{% if form.errors %}
+						    <script>$("#id_password").addClass("has-error")</script>
+						{% endif %}
 				</div>
 				<div class="row">
 					<button type="submit" class="btn btn-primary login-button col-sm-6 col-xs-12">

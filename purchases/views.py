@@ -192,6 +192,11 @@ class DayPurchaseDetail(LoginRequiredMixin, DetailView):
             return HttpResponseRedirect(reverse('purchases:all'))
 
 
+class PurchaseMetricsView(LoginRequiredMixin, TemplateView):
+    template_name = 'purchases/purchase_metrics.html'
+    login_url = '/login/'
+
+
 def check_cheque(form):
     form_error = False
     cleaned_data = form.cleaned_data

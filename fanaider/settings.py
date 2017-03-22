@@ -76,6 +76,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fanaider.wsgi.application'
 
+LOGIN_REDIRECT_URL = '/purchases/all/'
+
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases

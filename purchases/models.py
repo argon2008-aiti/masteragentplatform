@@ -35,7 +35,7 @@ class DayPurchase(models.Model):
     payment = models.ForeignKey(ProductPayment, null=True, blank=True)
 
     def __unicode__(self):
-        return self.shop.location + " ---- " + self.date
+        return self.shop.location + " ---- " + self.date.strftime('%m/%d/%Y')
 
     def get_total(self):
         total = 0
