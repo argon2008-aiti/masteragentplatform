@@ -460,3 +460,8 @@ a.purchase-item-link {
 .purchases-list {
     padding-top: 50px;
 }
+
+h3 span.badge.purchase-count {
+    font-size: 20px;
+    background-color: #337ab7;
+}

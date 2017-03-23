@@ -11,26 +11,30 @@
 	          <p class="section-title">All Purchases</p>
 	    </div>
 	    <div class="section-data purchases-list">
-		    {% for object in object_list%}
-		    <a href="../detail/{{object.pk}}" class=purchase-item-link>
+                 {% regroup object_list by date|date:"F" as purchases %}
+                   {% for purchase_list in purchases %}
+		   <h3 class=month-header>{{purchase_list.grouper}} <span class="badge purchase-count">{{purchase_list.list|length}}</span></h3>
+                    {% for purchase in purchase_list.list %}
+		    <a href="../detail/{{purchase.pk}}" class=purchase-item-link>
 		    <div class="row purchase-item">
 			    <div class="col-md-2">
-			       {{object.date}} 
+			       {{purchase.date}} 
 			    </div>
 			    <div class="col-md-3">
-			       {{object.get_purchase_type_display}} 
+			       {{purchase.get_purchase_type_display}} 
 			    </div>
 			    <div class="col-md-3">
-			       {{object.invoice_number}} 
+			       {{purchase.invoice_number}} 
 			    </div>
 			    <div class="col-md-2 right-align">
-			       {{object.get_total|floatformat:2|intcomma}} 
+			       {{purchase.get_total|floatformat:2|intcomma}} 
 			    </div>
 			    <div class="col-md-2">
 				    <div class="right-align">
-				    <span class="badge {{object.get_payment_status}}">{{object.get_payment_status}}</span></div>
+				    <span class="badge {{purchase.get_payment_status}}">{{purchase.get_payment_status}}</span></div>
 			    </div>
 		    </div></a>
+		    {% endfor %}
 		    {% endfor %}
             </div>
     </div>

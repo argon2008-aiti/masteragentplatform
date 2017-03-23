@@ -458,5 +458,16 @@ a.purchase-item-link {
 }
 
 .purchases-list {
-    padding-top: 50px;
+}
+
+h3 span.badge.purchase-count {
+    font-size: 16px;
+    background-color: #337ab7;
+}
+
+h3.month-header {
+    padding-top: 30px;
+    font-style: italic;
+    border-bottom: 4px #cecece solid;
+    padding-bottom: 5px;
 }
