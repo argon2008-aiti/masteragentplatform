@@ -34,6 +34,9 @@ class DayPurchase(models.Model):
     invoice_number = models.CharField(max_length=100)
     payment = models.ForeignKey(ProductPayment, null=True, blank=True)
 
+    class Meta:
+        ordering = ['-date']
+
     def __unicode__(self):
         return self.shop.location + " ---- " + self.date.strftime('%m/%d/%Y')
 
