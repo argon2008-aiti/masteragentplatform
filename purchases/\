@@ -1,0 +1,20 @@
+from django import forms
+from agent.models import Vendor
+
+class BookingForm(forms.Form):
+    vendor = forms.ModelChoiceField(Vendor.objects.all())
+    date   = forms.DateField()
+
+class ProductBookingForm(forms.Form):
+    product_id = forms.CharField(widget=forms.HiddenInput()) 
+    product_name = forms.CharField(widget=forms.HiddenInput()) 
+    unit_price = forms.CharField(widget=forms.HiddenInput()) 
+    booking    = forms.IntegerField(min_value=0)
+    returns    = forms.IntegerField(min_value=0)
+
+class ProductBookingForm(forms.Form):
+    product_id = forms.CharField(widget=forms.HiddenInput()) 
+    product_name = forms.CharField(widget=forms.HiddenInput()) 
+    unit_price = forms.CharField(widget=forms.HiddenInput()) 
+    booking    = forms.IntegerField(min_value=0)
+    returns    = forms.IntegerField(min_value=0)

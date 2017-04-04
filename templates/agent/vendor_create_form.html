@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block subnav %}
+{% include "vendors_subnav.html" %}
+{% endblock %}
+{% block contents %}
+<div class="container main-contents">
+    <div class="section">
+	    <div class="section-header">
+	          <p class="section-title">New Vendor</p>
+	    </div>
+	    <div class="section-data">
+		   {% if purchase_form.errors or form.errors %}
+		   <div class="alert-danger">The data you provided has errors. Please correct them.</div>
+		   {% endif %}
+        <form action="#" method="post" role="form" enctype="multipart/form-data">
+		{%csrf_token%}
+		<div class="row">
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_first_name">First Name:</label>
+			      {% render_field form.first_name class+="form-control" %}
+			      {% if form.first_name.errors %}
+			          {% for error in form.first_name.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  <script>$("#id_first_name").addClass("has-error")</script>
+				  {% endfor%}
+			      {% endif %}
+			</div>
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_last_name">Last Name:</label>
+			      {% render_field form.last_name class+="form-control" %}
+			      {% if form.last_name.errors %}
+			          {% for error in form.last_name.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_last_name").addClass("has-error")</script>
+			      {% endif %}
+			
+			</div>
+			<div class="form-group col-md-2">
+			      <label class="control-label" for="id_phone">Phone:</label>
+			      {% render_field form.phone class+="form-control" %}
+			      {% if form.phone.errors %}
+			          {% for error in form.phone.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_phone").addClass("has-error")</script>
+			      {% endif %}
+			</div>
+			<div class="form-group col-md-2">
+			      <label class="control-label" for="id_hometown">Hometown:</label>
+			      {% render_field form.hometown class+="form-control" %}
+			      {% if form.hometown.errors %}
+				  {% for error in form.hometown.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  <script>$("#id_hometown").addClass("has-error")</script>
+				  {% endfor%}
+			      {% endif %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-6">
+			      <label class="control-label" for="id_profile">Passport Picture:</label>
+			      {% render_field form.profile class+="form-control" %}
+			      {% if form.profile.errors %}
+				  {% for error in form.profile.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  <script>$("#id_profile").addClass("has-error")</script>
+				  {% endfor%}
+			      {% endif %}
+			</div>
+			<div class="form-group col-md-2">
+			      <label class="control-label" for="id_date_of_birth">Date of Birth:</label>
+			      {% render_field form.date_of_birth class+="form-control datepicker" %}
+			      {% if form.date_of_birth.errors %}
+				  {% for error in form.date_of_birth.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  <script>$("#id_date_of_birth").addClass("has-error")</script>
+				  {% endfor%}
+			      {% endif %}
+			</div>
+		</div>
+		<hr class=padding-bottom-10>
+		<div class="row">
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_guarantor">Guarantor:</label>
+			      {% render_field form.guarantor class+="form-control" %}
+			      {% if form.guarantor.errors %}
+			          {% for error in form.guarantor.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_guarantor").addClass("has-error")</script>
+			      {% endif %}
+			
+			</div>
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_guarantor_location">Guarantor Location:</label>
+			      {% render_field form.guarantor_location class+="form-control" %}
+			      {% if form.guarantor_location.errors %}
+			          {% for error in form.guarantor_location.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_guarantor_location").addClass("has-error")</script>
+			      {% endif %}
+			</div>
+			<div class="form-group col-md-2">
+			      <label class="control-label" for="id_guarantor_phone">Guarantor Phone:</label>
+			      {% render_field form.guarantor_phone class+="form-control" %}
+			      {% if form.guarantor_phone.errors %}
+			          {% for error in form.guarantor_phone.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_phone").addClass("has-error")</script>
+			      {% endif %}
+			</div>
+			<div class="form-group col-md-2">
+			      <label class="control-label" for="id_relation">Relation:</label>
+			      {% render_field form.relation class+="form-control" %}
+			      {% if form.relation.errors %}
+			          {% for error in form.relation.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_relation").addClass("has-error")</script>
+			      {% endif %}
+			</div>
+		</div>
+	<div class=row>
+	    <div class="col-md-4"></div> <!-- spacer-->
+	    <div class="col-md-5"></div> <!-- spacer-->
+	    <div class="col-md-3 padding-top-10">
+		<button type=submit class="btn btn-primary btn-large">
+			Add Vendor
+		</button>
+	    </div>
+	</div>
+	</form>
+       </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#vendor-new").addClass('active');
+		$("#vendors-link").addClass('active');
+
+		$(function() {
+			$(".datepicker").datepicker({
+		            changeMonth: true,
+		            changeYear: true,
+		            dateFormat: "yy-mm-dd",
+			    yearRange: '1950:c',
+			});
+		});
+	})
+</script>
+{% endblock %}
+

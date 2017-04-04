@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'purchases',
     'sales',
     'utils',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'fanaider.urls'
+
+THUMBNAIL_DEBUG = True
 
 TEMPLATES = [
     {

@@ -51,9 +51,9 @@
 		  <div class="nav-bar">
 			  <div class="nav-links-wrapper">
 				  <ul class="nav-links">
-					  <li class="nav-link"><a href="#" id=sales-link>Sales</a></li>
-					  <li class="nav-link"><a href="#" id=purchases-link>Purchases</a></li>
-					  <li class="nav-link"><a href="#" id=vendors-link>Vendors</a></li>
+					  <li class="nav-link"><a href="{% url 'sales:bookings-all'%}" id=sales-link>Sales</a></li>
+					  <li class="nav-link"><a href="{% url 'purchases:all'%}" id=purchases-link>Purchases</a></li>
+					  <li class="nav-link"><a href="{% url 'vendors:all'%}" id=vendors-link>Vendors</a></li>
 					  <li class="nav-link"><a href="#" id=equipment-link>Equipment</a></li>
 				  </ul>
 			  

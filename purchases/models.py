@@ -33,6 +33,8 @@ class DayPurchase(models.Model):
     purchase_type = models.IntegerField(choices=PURCHASE_TYPE, default=1)
     invoice_number = models.CharField(max_length=100)
     payment = models.ForeignKey(ProductPayment, null=True, blank=True)
+    total = models.FloatField()
+    month = models.IntegerField()
 
     class Meta:
         ordering = ['-date']
@@ -53,6 +55,10 @@ class DayPurchase(models.Model):
         else:
             return "Paid"
 
+    def save(self, *args, **kwargs):
+        self.total = self.get_total()
+        self.month = self.date.month
+        return super(DayPurchase, self).save(*args, **kwargs)
 
 class ProductPurchase(models.Model):
     product = models.ForeignKey(Product) 

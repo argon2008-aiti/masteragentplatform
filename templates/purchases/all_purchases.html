@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% load humanize %}
+{% load dict_filter %}
 {% block subnav %}
 {% include "purchases_subnav.html" %}
 {% endblock %}
@@ -13,7 +14,12 @@
 	    <div class="section-data purchases-list">
                  {% regroup object_list by date|date:"F" as purchases %}
                    {% for purchase_list in purchases %}
-		   <h3 class=month-header>{{purchase_list.grouper}} <span class="badge purchase-count">{{purchase_list.list|length}}</span></h3>
+		   <div class=month-header>
+		   <h3 class=month-name>{{purchase_list.grouper}} <span class="badge purchase-count">{{purchase_list.list|length}}</span></h3>
+		   {% with month=purchase_list.grouper %}
+		   <h3 class=month-total>GHS {{month_sum_dict|get_item:month|floatformat:2|intcomma}}</h3>
+		   {% endwith %}
+                   </div>
                     {% for purchase in purchase_list.list %}
 		    <a href="../detail/{{purchase.pk}}" class=purchase-item-link>
 		    <div class="row purchase-item">

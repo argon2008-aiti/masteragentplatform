@@ -20,4 +20,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^purchases/', include('purchases.urls', namespace='purchases')),
+    url(r'^vendors/', include('agent.urls', namespace='vendors')),
+    url(r'^sales/', include('sales.urls', namespace='sales')),
 ] 

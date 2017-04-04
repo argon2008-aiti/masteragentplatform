@@ -7,11 +7,13 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.db.models import Sum
 from utils.models import Product
 from purchases.forms import ProductPurchaseForm, DayPurchaseForm, PaymentForm
 from django.forms import formset_factory
 from purchases.models import *
+
+import calendar
 
 class NewPurchaseView(LoginRequiredMixin, FormView):
     template_name = 'purchases/new_purchase.html'
@@ -137,6 +139,19 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
     template_name = 'purchases/all_purchases.html'
     login_url = '/login/'
 
+    def get_context_data(self, **kwargs):
+        month_sum_dict = {}
+        q_set = self.get_queryset()
+        context = super(DayPurchaseListView, self).get_context_data(**kwargs)
+        purchase_months = q_set.values('month').annotate(g_t=Sum('total')) \
+                          .values('month', 'g_t').order_by()
+
+        for p in purchase_months:
+            month_sum_dict[calendar.month_name[p.get('month')]] = p.get('g_t')
+
+        context['month_sum_dict'] = month_sum_dict
+
+        return context
 
 class DayPurchaseDetail(LoginRequiredMixin, DetailView):
     template_name = 'purchases/purchase_detail.html'

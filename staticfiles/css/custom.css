@@ -383,6 +383,10 @@ table>thead {
     padding-top: 10px;
 }
 
+.padding-bottom-10 {
+    padding-bottom: 10px;
+}
+
 .btn-large {
     height: 40px;
     font-size: 20px;
@@ -401,7 +405,7 @@ table>thead {
 
 a.submenu-item-link {
     margin-left: 50px;
-    padding-bottom: 2px;
+    padding-bottom: 3px;
     text-decoration: none;
     color: #888;
 }
@@ -458,10 +462,38 @@ a.purchase-item-link {
 }
 
 .purchases-list {
-    padding-top: 50px;
 }
 
 h3 span.badge.purchase-count {
-    font-size: 20px;
+    font-size: 16px;
     background-color: #337ab7;
+}
+
+h3.month-header {
+    padding-top: 30px;
+    font-style: italic;
+    border-bottom: 4px #cecece solid;
+    padding-bottom: 5px;
+}
+
+.vendor-item {
+    margin-bottom: 30px;
+}
+
+.vendor-name {
+    font-size: 18px;
+    text-align: center;
+}
+
+.vendor-profile {
+    margin-bottom: 10px;
+    height: 150px;
+    width: 150px;
+    padding: 0;
+}
+
+.thumbnail {
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
