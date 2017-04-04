@@ -117,6 +117,7 @@ class NewPurchaseView(LoginRequiredMixin, FormView):
                         product_purchase.quantity = quantity
                         product_purchase.master_purchase = day_purchase
                         product_purchase.save()
+                day_purchase.save()
 
                 return self.form_valid()
         else:
