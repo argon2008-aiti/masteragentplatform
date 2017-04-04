@@ -17,7 +17,7 @@
 		   <div class=month-header>
 		   <h3 class=month-name>{{purchase_list.grouper}} <span class="badge purchase-count">{{purchase_list.list|length}}</span></h3>
 		   {% with month=purchase_list.grouper %}
-		   <h3 class=month-total>GHS {{month_sum_dict}}</h3>
+		   <h3 class=month-total>GHS {{month_sum_dict|get_item:month|floatformat:2|intcomma}}</h3>
 		   {% endwith %}
                    </div>
                     {% for purchase in purchase_list.list %}
