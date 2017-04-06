@@ -284,21 +284,20 @@ hr {
 
 .nav-links-wrapper {
     display: block;
-    position: relative;
     margin: auto;
     clear: both;
-    width: 800px;
     margin-top: 2px;
+    width: 80%;
 }
 
 .nav-links {
     list-style-type: none;
-    margin: 0;
-    padding: 0;
+    padding: auto;
+    clear: both;
 }
 
 li.nav-link {
-    display: inline;
+    display: inline-block;
     margin-left: 40px;
 }
 
@@ -519,4 +518,8 @@ h3.month-name {
 .badge.vendor-total {
     font-size: 18px;
     background-color: #337ab7;
+}
+
+th, td {
+    white-space: nowrap;
 }

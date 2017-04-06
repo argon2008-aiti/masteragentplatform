@@ -32,4 +32,13 @@ class PaymentForm(forms.Form):
     amount_on_cheque = forms.FloatField(required=False)
 
     total_cash = forms.FloatField(required=False)
+
+class DamageCountForm(forms.Form):
+    date = forms.DateField(input_formats=('%d-%m-%Y',))
     
+class ProductDamageForm(forms.Form):
+    product_id = forms.CharField(required=False, widget=forms.HiddenInput(), max_length=20)
+    product_code = forms.CharField(required=False, widget=forms.HiddenInput(), max_length=20)
+    product_name = forms.CharField(required=False, widget=forms.HiddenInput(), max_length=100)
+    unit_price = forms.FloatField(required=False, widget=forms.HiddenInput())
+    quantity = forms.IntegerField()

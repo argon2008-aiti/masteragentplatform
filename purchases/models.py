@@ -68,3 +68,32 @@ class ProductPurchase(models.Model):
     def __unicode__(self):
         return self.product.name + " ---- "+ str(self.quantity)
 
+class DamageCount(models.Model):
+    shop = models.ForeignKey(Shop)
+    date = models.DateField()
+    total = models.FloatField()
+    month = models.IntegerField()
+
+    def __unicode__(self):
+        return str(self.total)
+
+    def get_total(self):
+        total = 0
+        damages = self.productdamage_set.all()
+        for damage in damages:
+            total = total + damage.quantity*damage.product.unit_price 
+        return total
+
+    def save(self, *args, **kwargs):
+        self.total = self.get_total()
+        self.month = self.date.month
+        return super(DamageCount, self).save(*args, **kwargs)
+
+class ProductDamage(models.Model):
+    product = models.ForeignKey(Product)
+    quantity = models.IntegerField()
+    master_damage = models.ForeignKey(DamageCount)
+
+    def __unicode__(self):
+        return self.product.name + "-------" + str(self.quantity)
+

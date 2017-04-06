@@ -9,10 +9,11 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from utils.models import Product
-from purchases.forms import ProductPurchaseForm, DayPurchaseForm, PaymentForm
+from purchases.forms import *
 from django.forms import formset_factory
 from purchases.models import *
 
+from utils.models import vending_products
 import calendar
 
 class NewPurchaseView(LoginRequiredMixin, FormView):
@@ -135,6 +136,92 @@ class NewPurchaseView(LoginRequiredMixin, FormView):
     def form_valid(self):
         return HttpResponseRedirect(reverse('purchases:all'))
 
+class NewDamageCountView(LoginRequiredMixin, FormView):
+    template_name = 'purchases/new_damages.html'
+    form_class = DamageCountForm
+    login_url = '/login/'
+    
+    def get_initial_data(self):
+        products = Product.objects.all()
+        product_count = products.count()
+        initial_data = [
+            {'product_id': product.id, 
+             'product_code': product.code, 
+             'product_name': product.name,
+             'unit_price': product.unit_price,
+             'quantity': 0} for product in products]
+        return initial_data
+
+    def get(self, request, *args, **kwargs):
+        ProductDamageFormSet = formset_factory(ProductDamageForm, extra=0)
+        damage_form = DamageCountForm()
+        formset = ProductDamageFormSet(initial=self.get_initial_data())
+        return self.render_to_response(self.get_context_data(formset=formset, damage_form=damage_form))
+
+    def post(self, request, *args, **kwargs):
+        ProductDamageFormSet = formset_factory(ProductDamageForm, extra=0)
+        damage_form = DamageCountForm(request.POST)
+        formset = ProductDamageFormSet(request.POST)
+        # only called when form is valid with invoice_number, date and purchase_type provided
+        if damage_form.is_valid():
+            cleaned_data = damage_form.cleaned_data
+        if formset.is_valid():
+            print "problem with form"
+            from agent.models import ShopAssistant
+            shop = ''
+            if 'shopassistants' in [group.name for group in request.user.groups.all()]:
+                shop = ShopAssistant.objects.get(user=request.user).shop
+            elif u'agents' in [group.name for group in request.user.groups.all()]:
+                shop = user.agent.shop
+            prod_count = 0
+            for form in formset:
+                cleaned_data = form.cleaned_data
+                if cleaned_data.get('quantity')==0 or cleaned_data.get('quantity') == "":
+                    continue
+                else:
+                    prod_count = prod_count + 1
+            if prod_count == 0:
+                form.add_error('quantity', "At least one Product must have a quantity greater than 0")
+                return self.form_invalid(formset, damage_form) 
+            # Everything is alright.... Begin saving.
+            else: 
+                damage_count = DamageCount()
+                damage_count .shop = shop
+                damage_count.date = damage_form.cleaned_data.get('date')
+                damage_count.save()
+
+                for form in formset:
+                    # No quantity
+                    cleaned_data = form.cleaned_data
+                    if cleaned_data.get('quantity')==0 or cleaned_data.get('quantity')=="":
+                        continue
+                    else:
+                        pid = cleaned_data.get('product_id')
+                        quantity = cleaned_data.get('quantity')
+                        product = Product.objects.get(pk=pid)
+                        product_damage = ProductDamage()
+                        product_damage.product = product
+                        product_damage.quantity = quantity
+                        product_damage.master_damage = damage_count
+                        product_damage.save()
+                damage_count.save()
+
+                return self.form_valid()
+        else:
+            for form in formset:
+                try:
+                    form.errors.pop('quantity')
+                except KeyError:
+                    continue
+            form.add_error('quantity', "Quantity field cannot be empty.")
+            return self.form_invalid(formset, purchase_form)
+
+    def form_invalid(self, formset, damage_form):
+        return self.render_to_response(self.get_context_data(formset=formset, damage_form=damage_form))
+
+    def form_valid(self):
+        return HttpResponseRedirect(reverse('purchases:damages-all'))
+
 class DayPurchaseListView(LoginRequiredMixin, ListView):
     model = DayPurchase
     template_name = 'purchases/all_purchases.html'
@@ -151,6 +238,55 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
             month_sum_dict[calendar.month_name[p.get('month')]] = p.get('g_t')
 
         context['month_sum_dict'] = month_sum_dict
+
+        return context
+
+class DamageCountListView(LoginRequiredMixin, ListView):
+    model = DamageCount
+    template_name = 'purchases/all_damages.html'
+    login_url = '/login/'
+
+    def get_context_data(self, **kwargs):
+        month_sum_dict = {}
+        q_set = self.get_queryset()
+        context = super(DamageCountListView, self).get_context_data(**kwargs)
+        purchase_months = q_set.values('month').annotate(g_t=Sum('total')) \
+                          .values('month', 'g_t').order_by()
+
+        total_for_month = DayPurchase.objects.values('month').annotate(g_t=Sum('total')) \
+                          .values('month', 'g_t').order_by()
+
+        for p in purchase_months:
+            month = p.get('month')
+            p_total = 0
+            for purchase in total_for_month:
+                if purchase.get("month")==month:
+                    p_total = purchase.get("g_t")
+            if p_total == 0:
+                percent = 0
+            else:
+                percent = float(p.get('g_t')/p_total)*100
+            month_sum_dict[calendar.month_name[month]] = [p.get('g_t'), percent] 
+
+        damages = self.object_list
+        damages_dict = {}
+
+        for damage in damages:
+            damage_list = []
+            for code in vending_products:
+                found =0
+                for product_damage in damage.productdamage_set.all():
+                    if product_damage.product.code == code:
+                        damage_list.append(product_damage.quantity)
+                        found =1
+                        break
+                if found==0:
+                    damage_list.append(0)
+
+            damages_dict[damage.pk] = damage_list
+
+        context['month_sum_dict'] = month_sum_dict
+        context['damages_dict']   = damages_dict
 
         return context
 
