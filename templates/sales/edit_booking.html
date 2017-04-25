@@ -7,10 +7,10 @@
 <div class="container main-contents">
     <div class="section">
 	    <div class="section-header">
-		    <p class="section-title">{{title}}</p>
+	          <p class="section-title">Edit Booking</p>
 	    </div>
 	    <div class="section-data">
-		   {% if purchase_form.errors or form.errors %}
+		   {% if booking_form.errors or form.errors %}
 		   <div class="alert-danger">The data you provided has errors. Please correct them.</div>
 		   {% endif %}
         <form action="#" method="post" role="form">
@@ -20,60 +20,51 @@
 			<div class="form-group col-md-4">
 			      <label class="control-label" for="id_vendor">Vendor:</label>
 			      {% render_field booking_form.vendor class+="form-control" %}
+			      {% if booking_form.vendor.errors %}
+			          {% for error in booking_form.vendor.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_vendor").addClass("has-error")</script>
+			      {% endif %}
 			</div>
-			
 			<div class="col-md-5"></div> <!-- spacer-->
-
 			<div class="form-group col-md-3">
 			      <label class="control-label" for="id_purchase_date">Date:</label>
 			      {% render_field booking_form.date class+="form-control datepicker" %}
+			      {% if booking_form.date.errors %}
+			          {% for error in booking_form.date.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  {% endfor%}
+				  <script>$("#id_date").addClass("has-error")</script>
+			      {% endif %}
 			</div>
 		</div>
+		<hr>
 	<table class="table table-striped table-bordered purchases">
 		<thead>
 			<tr>
+				<th>Product Code</th>
 				<th>Product Name</th>
-				<th>Bookings</th>
-				<th>Returns</th>
-				<th>Sales</th>
-				<th>Unit Price (GHS)</th>
-				<th>Sub Total (GHS)</th>
+				<th>Product Bookings</th>
 			</tr>
 		</thead>
-		<tfoot>
-			<tr>
-				<th class=hidden-cell></th>
-				<th class=hidden-cell></th>
-				<th class=hidden-cell></th>
-				<th class=hidden-cell></th>
-				<th>Grand Total:</th>
-				<th class=right-align id=gtotal>0.00</th>
-			</tr>
-		
-		</tfoot>
 		<tbody>
 			{% for form in formset %}
 			{{form.product_id}}
 			{{form.product_code}}
 			{{form.product_name}}
-			{{form.unit_price}}
 			<tr class="product_row" id="product_{{form.product_id.value}}">	
+				<td>{{form.product_code.value}}</td>
 				<td>{{form.product_name.value}}</td>
-				<td class="bookings_cell">{% render_field form.booking class+="form-control bookings-box"%}</td>
-
-				<td class="returns_cell">{% render_field form.returns class+="form-control returns-box"%}</td>
-			      {% if form.returns.errors %}
-			          {% for error in form.returns.errors %}
+				<td class="booking_cell">{% render_field form.booking class+="form-control booking-box"%}</td>
+			      {% if form.booking.errors %}
+			          {% for error in form.booking.errors %}
 				      <div class="alert-danger">{{error}}</div>
 				  {% endfor%}
-				  <script>$(".returns-box").addClass("has-error")</script>
+				  <script>$(".booking-box").addClass("has-error")</script>
 			      {% endif %}
-				<td class="product_sales right-align">0</td>
-				<td class="unit_price right-align">{{form.unit_price.value}}</td>
-				<td class="unit_total right-align">0.00</td>
 			</tr>	
 			{% endfor %}
-		
 		</tbody>
 	</table>
 	<hr class="purchase_form_divider">
@@ -82,7 +73,7 @@
 	    <div class="col-md-4"></div> <!-- spacer-->
 	    <div class="col-md-4 padding-top-10">
 		<button type=submit class="btn btn-primary btn-large">
-			Close This Booking
+			Save Booking
 		</button>
 	    </div>
 	</div>
@@ -92,33 +83,15 @@
 </div>
 
 <script type="text/javascript">
-	function get_total() {
-	       var g_total;
-
-	       g_total = 0.00;
-	       $(".unit_total").each(function(index){
-		      g_total = g_total + parseFloat($(this).html());
-	       })
-	       return g_total;
-	}
-
 	$(document).ready(function(){
 		$("#sales-link").addClass("active");
 		$("#sales-bookings").addClass("active");
-
-		$(".returns-box").on("keyup", function() {
-	              var returns = $(this).val();	
-		      var bookings_input = $(this).parent(".returns_cell")
-			      .prev(".bookings_cell").children(".bookings-box");
-		      var unit_price_dom = $(this).parent(".returns_cell").nextAll(".unit_price");
-		      var sales = $(this).parent(".returns_cell").next(".product_sales");
-		      var unit_price = unit_price_dom.html();
-		      sales.html(bookings_input.val()-returns);
-		      var total = sales.html()*unit_price;
-		      unit_price_dom.siblings(".unit_total").html(total.toFixed(2));
-	              var g_total = get_total();	
-		      $("#gtotal").html(g_total.toFixed(2));
-		})
+		$(".datepicker").datepicker({
+		    changeMonth: true,
+		    changeYear: true,
+		    dateFormat: "dd-mm-yy",
+		    maxDate: '0'
+		});
 	})
 </script>
 {% endblock %}

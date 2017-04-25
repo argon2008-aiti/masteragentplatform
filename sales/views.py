@@ -5,12 +5,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
+from django.views import View
 from django.forms import formset_factory
+from django.db.models import Sum
 
 from forms import *
 from models import *
 
 from utils.models import vending_products, Product
+import itertools
 
 class NewBookingView(LoginRequiredMixin, FormView):
     template_name = 'sales/new_booking.html'
@@ -19,11 +22,16 @@ class NewBookingView(LoginRequiredMixin, FormView):
 
     def get_initial_data(self):
         products = Product.objects.all()
-        initial_data = [
-            {'product_id': product.id,
-             'product_code': product.code,
-             'booking': 0,
-             'product_name': product.name} for product in products if product.code in vending_products]
+        initial_data = []
+
+        for code in vending_products:
+            for p in products:
+                if p.code == code:
+                    initial_data.append(
+                        {'product_id': p.id,
+                         'product_code': p.code,
+                         'booking': 0,
+                         'product_name': p.name})
         return initial_data
     
 
@@ -73,18 +81,224 @@ class AllBookingView(LoginRequiredMixin, ListView):
     template_name = 'sales/all_booking.html'
     model = VendorBooking
     login_url = '/login/'
+    paginate_by = 1
 
-class BookingUpdateView(LoginRequiredMixin, UpdateView):
-    template_name = 'sales/update_booking.html'
+    def get_queryset(self, **kwargs):
+        objects = VendorBooking.objects.all()
+        sales_dict = {}
+        sales_container = []
+
+        for key, values in itertools.groupby(objects, key=lambda obj: obj.date):
+            sales_dict['date'] = key
+            sales_dict['sales'] = list(values)
+            sales_container.append(sales_dict)
+            sales_dict = {}
+
+        return sales_container
+
+    def get_context_data(self, **kwargs):
+        q_set = VendorBooking.objects.all()
+        context = super(AllBookingView, self).get_context_data(**kwargs)
+        daily_sales = q_set.values('date').annotate(g_t=Sum('total')) \
+                          .values('date', 'g_t').order_by()
+
+        daily_sales_dict = {}
+
+        for sale in q_set.order_by():
+            product_sale_list = []
+            for code in vending_products:
+                found =0
+                for product_booking in sale.productbooking_set.all():
+                    if product_booking.product.code == code:
+                        product_sale_list.append(product_booking.booking)
+                        if sale.closed == True:
+                            product_sale_list.append(product_booking.returns)
+                            product_sale_list.append(product_booking.booking-product_booking.returns)
+                        else:
+                            product_sale_list.append(" ")
+                            product_sale_list.append(" ")
+                        found =1
+                        break
+                if found==0:
+                    product_sale_list.append(" ")
+                    product_sale_list.append(" ")
+                    product_sale_list.append(" ")
+
+            daily_sales_dict[sale.pk] = product_sale_list
+
+        context['daily_sales_dict']   = daily_sales_dict
+
+        return context
+
+class BookingUpdateView(LoginRequiredMixin, FormView):
+    template_name = 'sales/new_booking.html'
     form_class = UpdateBookingForm
     login_url ='/login/'
+    vendor_booking = None
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingUpdateView, self).get_context_data(**kwargs)
+        data = {'vendor': self.vendor_booking.vendor.id, 'date': self.vendor_booking.date}
+
+        ProductBookingFormSet = formset_factory(ProductBookingForm, extra=0)
+
+        formset = ProductBookingFormSet(initial=self.get_initial_data())
+
+        booking_form = UpdateBookingForm(initial=data)
+
+        context['formset'] = formset
+        context['booking_form'] = booking_form
+        return context
 
     def get_initial_data(self):
-        vendor_booking = self.get_object()
         initial_data = [
             {'product_id': productbooking.product.id,
              'product_code': productbooking.product.code,
              'booking': productbooking.booking,
              'product_name': productbooking.product.name} for productbooking in \
-                vendor_booking.productbooking_set.all()]
+                self.vendor_booking.productbooking_set.all()]
         return initial_data
+
+    def get(self, request, *args, **kwargs):
+        self.vendor_booking = VendorBooking.objects.get(pk=kwargs.get('pk'))
+        context = self.get_context_data()
+
+        if self.vendor_booking.closed == False:
+            self.template_name = 'sales/edit_booking.html'
+
+        else:
+            self.template_name = 'sales/edit_closed_booking.html'
+
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        self.vendor_booking = VendorBooking.objects.get(pk=kwargs.get('pk'))
+
+        ProductBookingFormSet = formset_factory(ProductBookingForm, extra=0)
+        formset = ProductBookingFormSet(request.POST)
+
+        if formset.is_valid():
+            prod_count = 0
+            for form in formset:
+                cleaned_data = form.cleaned_data
+                if cleaned_data.get('booking')==0 or cleaned_data.get('booking')=="":
+                    continue
+                else:
+                    prod_count = prod_count + 1
+            if prod_count == 0:
+                form.add_error('booking', "At least one product must have a booking greater than 0")
+                return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
+            else:
+                for form in formset:
+                    product = Product.objects.get(pk=form.cleaned_data.get('product_id'))
+                    product_booking = self.vendor_booking.productbooking_set.get(product=product)
+                    new_booking = form.cleaned_data.get('booking')
+                    product_booking.booking = new_booking
+                    product_booking.save()
+        
+        return HttpResponseRedirect(reverse('sales:bookings-all'))
+
+class CloseBookingView(LoginRequiredMixin, FormView):
+    template_name = 'sales/sales_closure.html'
+    form_class = SalesClosureForm
+    login_url ='/login/'
+    vendor_booking = None
+
+    def get_context_data(self, **kwargs):
+        context = super(CloseBookingView, self).get_context_data(**kwargs)
+        data = {'vendor': self.vendor_booking.vendor.id, 'date': self.vendor_booking.date}
+
+        SalesClosureFormSet = formset_factory(SalesClosureForm, extra=0)
+
+        formset = SalesClosureFormSet(initial=self.get_initial_data())
+
+        booking_form = UpdateBookingForm(initial=data)
+
+        title = "Close Booking"
+
+        if self.vendor_booking.closed:
+            title = "Edit Booking"
+
+        context['formset'] = formset
+        context['booking_form'] = booking_form
+        context['title'] = title
+        return context
+
+    def get_initial_data(self):
+        initial_data = [
+            {'product_id': productbooking.product.id,
+             'product_code': productbooking.product.code,
+             'booking': productbooking.booking,
+             'returns': productbooking.returns,
+             'unit_price': productbooking.product.unit_price,
+             'product_name': productbooking.product.name} for productbooking in \
+                self.vendor_booking.productbooking_set.all()]
+        return initial_data
+
+    def get(self, request, *args, **kwargs):
+        self.vendor_booking = VendorBooking.objects.get(pk=kwargs.get('pk'))
+        context = self.get_context_data()
+
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        self.vendor_booking = VendorBooking.objects.get(pk=kwargs.get('pk'))
+
+        SalesClosureFormSet = formset_factory(SalesClosureForm, extra=0)
+        formset = SalesClosureFormSet(request.POST)
+        
+        if formset.is_valid():
+            prod_count = 0
+            for form in formset:
+                cleaned_data = form.cleaned_data
+                if cleaned_data.get('returns')=="":
+                    prod_count = prod_count + 1
+                else:
+                    continue
+            if prod_count > 0:
+                form.add_error('returns', "returns field cannot be empty")
+                return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
+            else:
+                total = 0
+                for form in formset:
+                    product = Product.objects.get(pk=form.cleaned_data.get('product_id'))
+                    product_booking = self.vendor_booking.productbooking_set.get(product=product)
+                    returns = form.cleaned_data.get('returns')
+                    product_booking.returns = returns
+                    product_booking.save()
+                    total = total + product.unit_price*(product_booking.booking-product_booking.returns)
+                    print total
+
+                self.vendor_booking.closed = True
+                self.vendor_booking.total = total
+                self.vendor_booking.save()
+        
+        return HttpResponseRedirect(reverse('sales:bookings-all'))
+
+class PayBookingView(LoginRequiredMixin, FormView):
+    form_class = BookingPaymentForm
+    success_url = '/sales/bookings/all'
+    template_name = 'sales/pay_booking.html'
+
+    def get_initial(self):
+        v_id = self.kwargs.get('pk')
+        initial = super(PayBookingView, self).get_initial()
+        initial['vendor'] = VendorBooking.objects.get(pk=v_id).vendor.id
+        initial['date'] = VendorBooking.objects.get(pk=v_id).date
+        initial['sale_total'] = VendorBooking.objects.get(pk=v_id).total
+
+        return initial
+
+    def form_valid(self, form):
+        v_id = self.kwargs.get('pk')
+        amount_paid = form.cleaned_data.get('payment_total')
+        vendor_booking = VendorBooking.objects.get(pk=v_id)
+        vendor_booking.amount_paid = amount_paid
+        vendor_booking.paid = True
+        vendor_booking.save()
+        return super(PayBookingView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        print form
+        return super(PayBookingView, self).form_invalid(form)
+

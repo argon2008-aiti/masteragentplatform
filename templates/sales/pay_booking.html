@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% block subnav %}
+{% include "sales_subnav.html" %}
+{% endblock %}
+{% block contents %}
+<div class="container main-contents">
+    <div class="section">
+	    <div class="section-header">
+	          <p class="section-title">Pay Booking</p>
+	    </div>
+	    <div class="section-data">
+		   {% if form.errors %}
+		   <div class="alert-danger">The data you provided has errors. Please correct them.</div>
+		   {% endif %}
+        <form action="#" method="post" role="form">
+		{%csrf_token%}
+		<div class="row">
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_vendor">Vendor:</label>
+			      {% render_field form.vendor class+="form-control" %}
+			</div>
+			<div class="form-group col-md-4"></div> 
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_date">Date:</label>
+			      {% render_field form.date class+="form-control" %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-8"></div> 
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_sale_total">Sales GHC:</label>
+			      {% render_field form.sale_total class+="form-control right-align" %}
+			</div>
+		</div>
+		<hr class=padding-bottom-10>
+		<div class="row">
+			<div class="form-group col-md-8"></div> 
+			<div class="form-group col-md-4">
+			      <label class="control-label" for="id_payment_total">Amount Paid GHC:</label>
+			      {% render_field form.payment_total class+="form-control right-align" %}
+			      {% if form.payment_total.errors %}
+				  {% for error in form.payment_total.errors %}
+				      <div class="alert-danger">{{error}}</div>
+				  <script>$("#id_payment_total").addClass("has-error")</script>
+				  {% endfor%}
+			      {% endif %}
+			</div>
+		</div>
+	<div class=row>
+	    <div class="col-md-8"></div> <!-- spacer-->
+	    <div class="col-md-4 padding-top-10">
+		<button type=submit class="btn btn-primary btn-large">
+			Authorize Payment
+		</button>
+	    </div>
+	</div>
+	</form>
+       </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#sales-bookings").addClass('active');
+		$("#sales-link").addClass('active');
+
+		$(function() {
+			$(".datepicker").datepicker({
+		            changeMonth: true,
+		            changeYear: true,
+		            dateFormat: "yy-mm-dd",
+			    yearRange: '1950:c',
+			});
+		});
+	})
+</script>
+{% endblock %}
+

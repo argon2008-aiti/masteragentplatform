@@ -28,24 +28,24 @@
 					<th>FANYOGO Pouch</th>
 					<th>FANCHOCO Pouch</th>
 					<th>FANICE Pouch</th>
-					<th>FANPOP Pouch</th>
 					<th>FANDANGO  Pouch</th>
 					<th>FANDANGO 500ml</th>
+					<th>FANPOP Pouch</th>
 					<th>FANYOGO MP</Th>
-					<th>Total Value</th>
+					<th>TOTAL VALUE(GHS)</th>
 				</tr>
 			   </thead>
 			   <tbody>
                     {% for purchase in purchase_list.list %}
 		        <tr>
 		    <a href="../detail/{{purchase.pk}}" class=purchase-item-link>
-			    <td>{{purchase.date}}</td> 
+			    <td class="damages-date">{{purchase.date}}</td> 
 			    {% with damage_list=damages_dict|get_item:purchase.pk %}
 			    {% for item in damage_list %}
 				    <td>{{item}}</td>
 			    {% endfor %}
 			    {% endwith %}
-			    <td>{{purchase.get_total|floatformat:2|intcomma}}</td> 
+			    <td class="damages-total">{{purchase.get_total|floatformat:2|intcomma}}</td> 
 		    </a>
 		        </tr>
 		    {% endfor %}

@@ -10,13 +10,18 @@
 <div class="container main-contents booking-container">
     <div class="section">
 	    <div class="section-header">
-	          <p class="section-title">Bookings</p>
-		  <div class="pagination-container">{% include "sales/booking_pagination.html" %}</div>
+	          <p class="section-title">All Bookings</p>
 	    </div>
 	    <div class="section-data booking-list">
-                   {% for daily_sale in object_list %}
+                 {% regroup object_list by date as sales %}
+                   {% for daily_sale in sales %}
 		   <div class=day-header>
-		   <h3 class=day-name>{{daily_sale.date | date:"l, j F"}} <span class="badge purchase-count">{{daily_sale.sales|length}}</span></h3>
+		   <h3 class=day-name>{{daily_sale.grouper}} <span class="badge purchase-count">{{daily_sale.list|length}}</span></h3>
+		   {% comment %}
+		   {% with day=daily_sale.grouper %}
+		   <h3 class=day-total>GHS {{month_sum_dict|get_item:month|get_from_index:0}} ({{month_sum_dict|get_item:month|get_from_index:1|floatformat:2}}%)</h3>
+		   {% endwith %}
+		   {% endcomment %}
                    </div>
 
 		    <table class="stripe cell-border bookings-table" cellspacing="0"  width="100%">
@@ -39,78 +44,49 @@
 
 					<th>bookings</th>
 					<th>returns</th>
-					<th class="border-right">sales</th>
+					<th>sales</th>
 
 					<th>bookings</th>
 					<th>returns</th>
-					<th class="border-right">sales</th>
+					<th>sales</th>
 
 					<th>bookings</th>
 					<th>returns</th>
-					<th class="border-right">sales</th>
+					<th>sales</th>
 
 					<th>bookings</th>
 					<th>returns</th>
-					<th class="border-right">sales</th>
+					<th>sales</th>
 
 					<th>bookings</th>
 					<th>returns</th>
-					<th class="border-right">sales</th>
+					<th>sales</th>
 
 					<th>bookings</th>
 					<th>returns</th>
-					<th class="border-right">sales</th>
+					<th>sales</th>
 
 					<th>bookings</th>
 					<th>returns</th>
-					<th class="border-right">sales</th>
+					<th>sales</th>
 
 					<th>TOTAL</th>
-					<th></th>
-					<th></th>
+					<th>EDIT</th>
+					<th>STATUS</th>
 
 				</tr>
 			    </thead>
 			    <tbody>
-				    {% for sale in daily_sale.sales %}
+				    {% for sale in daily_sale.list %}
 				<tr>
-					<td class="vendor-cell">{{sale}}</td>
+					<td>{{sale}}</td>
 				        {% with v_booking=sale.pk %}
 					{% for item in daily_sales_dict|get_item:v_booking %}
-					<td {% if forloop.counter|divisibleby:3 %}class="sale"{% endif %}>{{item}}</td>
+					<td>{{item}}</td>
 					{% endfor %}
-					<td class="sales-total">{{sale.total|floatformat:2}}</td>
-					<td>
-						{% if sale.closed %}
-						    {% if sale.paid %}
-						        <a href="/sales/bookings/view/{{v_booking}}" class="input_link">
-						        <input type="button" class="btn btn-primary" value=View>
-						        </a>
-						    {% else %}
-						        <a href="/sales/bookings/close/{{v_booking}}" class="input_link">
-						        <input type="button" class="btn btn-primary" value=Edit>
-						    {% endif %}
-						{% else %}
-						<a href="/sales/bookings/edit/{{v_booking}}" class="input_link">
-						<input type="button" class="btn btn-primary" value=Edit>
-						</a>
-						{% endif %}
-					</td>
-					<td>
-						{% if sale.closed  %}
-						    {% if sale.paid %}
-						        <input type="button" class="btn btn-success" value=Paid disabled>
-						    {% else %}
-							<a href="/sales/bookings/pay/{{v_booking}}" class="input_link">
-							<input type="button" class="btn btn-warning" value=Pay>
-							</a>
-						    {% endif %}
-						{% else %}
-						<a href="/sales/bookings/close/{{v_booking}}" class="input_link">
-						<input type="button" class="btn btn-danger" value=Close>
-						</a>
-						{% endif %}
-					</td>
+					<td class="sales-total"></td>
+					<td><input type="button" class="btn btn-primary" value=Edit></td>
+					<td><input type="button" class="btn btn-danger" value=Close></td>
 					{% endwith %}
 				</tr>
 				{% endfor %}
@@ -141,8 +117,6 @@
 			 orderable: false
 		      }]
 		});
-
-		("#booking-box")
 	})
 </script>
 {% endblock %}
