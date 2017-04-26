@@ -18,6 +18,7 @@ class VendorBooking(models.Model):
 
     def __unicode__(self):
         return self.vendor.first_name + " " + self.vendor.last_name
+    '''
     def get_total(self):
         total = 0
         bookings = self.productbooking_set.all()
@@ -28,6 +29,7 @@ class VendorBooking(models.Model):
     def save(self, *args, **kwargs):
         self.total = self.get_total()
         return super(VendorBooking, self).save(*args, **kwargs)
+    '''
 
 class ProductBooking(models.Model):
     product = models.ForeignKey(Product)
