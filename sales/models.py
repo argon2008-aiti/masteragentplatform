@@ -1,4 +1,4 @@
-'''from __future__ import unicode_literals
+from __future__ import unicode_literals
 
 from django.db import models
 
@@ -34,4 +34,4 @@ class ProductBooking(models.Model):
     master_booking = models.ForeignKey(VendorBooking)
     booking = models.IntegerField()
     returns = models.IntegerField(default=0)
-  '''  
+    
