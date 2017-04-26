@@ -76,7 +76,7 @@ class NewBookingView(LoginRequiredMixin, FormView):
         
         else:
             return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
-
+"""
 class AllBookingView(LoginRequiredMixin, ListView):
     template_name = 'sales/all_booking.html'
     model = VendorBooking
@@ -301,4 +301,4 @@ class PayBookingView(LoginRequiredMixin, FormView):
     def form_invalid(self, form):
         print form
         return super(PayBookingView, self).form_invalid(form)
-
+"""
