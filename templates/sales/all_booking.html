@@ -116,6 +116,10 @@
 				{% endfor %}
 			    </tbody>
 		    </table>
+		    {% empty %}
+		    <div class="empty-query-div">
+		    <h1 class="empty-query-string">There are no Bookings to show!</h1>
+		    </div>
 		    {% endfor %}
             </div>
     </div>

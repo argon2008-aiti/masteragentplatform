@@ -595,3 +595,11 @@ table.dataTable thead th.border-right {
 table.bookings-table tbody tr td {
     font-size: 14px;
 }
+
+.empty-query-div {
+    padding: 100px 20px;
+}
+
+.empty-query-string {
+    text-align: center;
+}
