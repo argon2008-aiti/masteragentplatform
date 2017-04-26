@@ -11,7 +11,7 @@ class VendorBooking(models.Model):
     closed = models.BooleanField(default=False)
     paid   = models.BooleanField(default=False)
     total  = models.FloatField(blank=True, null=True, default=0.0)
-    m_amount_paid = models.FloatField(blank=True, null=True, default=0.0)
+    amount_paid = models.FloatField(blank=True, null=True, default=0.0)
 
     class Meta:
         ordering= ['-date']
