@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 from django.views import View
@@ -273,6 +273,38 @@ class CloseBookingView(LoginRequiredMixin, FormView):
                 self.vendor_booking.save()
         
         return HttpResponseRedirect(reverse('sales:bookings-all'))
+
+class BookingsDetailView(LoginRequiredMixin, TemplateView):
+    template_name = 'sales/booking_details.html'
+    form_class = BookingsDetailForm
+    login_url ='/login/'
+    vendor_booking = None
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingsDetailView, self).get_context_data(**kwargs)
+        self.vendor_booking = VendorBooking.objects.get(pk=kwargs.get('pk'))
+        data = {'vendor': self.vendor_booking.vendor.id, 'date': self.vendor_booking.date}
+
+        BookingsDetailFormSet = formset_factory(BookingsDetailForm, extra=0)
+
+        formset = BookingsDetailFormSet(initial=self.get_initial_data())
+
+        booking_form = UpdateBookingForm(initial=data)
+
+        context['formset'] = formset
+        context['booking_form'] = booking_form
+        return context
+
+    def get_initial_data(self):
+        initial_data = [
+            {'product_id': productbooking.product.id,
+             'product_code': productbooking.product.code,
+             'booking': productbooking.booking,
+             'returns': productbooking.returns,
+             'unit_price': productbooking.product.unit_price,
+             'product_name': productbooking.product.name} for productbooking in \
+                self.vendor_booking.productbooking_set.all()]
+        return initial_data
 
 class PayBookingView(LoginRequiredMixin, FormView):
     form_class = BookingPaymentForm

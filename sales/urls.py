@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^bookings/edit/(?P<pk>\d+)/$', BookingUpdateView.as_view(), name="edit"),
     url(r'^bookings/close/(?P<pk>\d+)/$', CloseBookingView.as_view(), name="close"),
     url(r'^bookings/pay/(?P<pk>\d+)/$', PayBookingView.as_view(), name="pay"),
+    url(r'^bookings/view/(?P<pk>\d+)/$', BookingsDetailView.as_view(), name="view"),
 ]

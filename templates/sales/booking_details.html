@@ -7,12 +7,9 @@
 <div class="container main-contents">
     <div class="section">
 	    <div class="section-header">
-		    <p class="section-title">{{title}}</p>
+		    <p class="section-title">Booking Details</p>
 	    </div>
 	    <div class="section-data">
-		   {% if purchase_form.errors or form.errors %}
-		   <div class="alert-danger">The data you provided has errors. Please correct them.</div>
-		   {% endif %}
         <form action="#" method="post" role="form">
 		{{ formset.management_form }}
 		{%csrf_token%}
@@ -62,12 +59,6 @@
 				<td class="bookings_cell">{% render_field form.booking class+="form-control bookings-box"%}</td>
 
 				<td class="returns_cell">{% render_field form.returns class+="form-control returns-box"%}</td>
-			      {% if form.returns.errors %}
-			          {% for error in form.returns.errors %}
-				      <div class="alert-danger">{{error}}</div>
-				  {% endfor%}
-				  <script>$(".returns-box").addClass("has-error")</script>
-			      {% endif %}
 				<td class="product_sales right-align">0</td>
 				<td class="unit_price right-align">{{form.unit_price.value}}</td>
 				<td class="unit_total right-align">0.00</td>
@@ -81,8 +72,8 @@
 	    <div class="col-md-4"></div> <!-- spacer-->
 	    <div class="col-md-4"></div> <!-- spacer-->
 	    <div class="col-md-4 padding-top-10">
-		<button type=submit class="btn btn-primary btn-large">
-			Close This Booking
+		    <button class="btn btn-primary btn-large" type="button" onclick="location.href='{%url "sales:bookings-all"%}'">
+			OK		
 		</button>
 	    </div>
 	</div>
