@@ -110,10 +110,6 @@ html, body {
     z-index: 0;
 }
 
-.has-error .form-control:focus {
-    box-shadow: none; 
-}
-
 .has-success .form-control:focus {
     box-shadow: none; 
 }
@@ -448,7 +444,8 @@ a.submenu-item-link.active {
     margin-bottom: 10px;
 }
 
-input.has-error {
+input.has-error,
+input.has-error.form-control:focus {
     border-color: #a94442;
     box-shadow: 1px 1px 5px 1px #ebccd1;
 }

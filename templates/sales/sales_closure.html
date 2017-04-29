@@ -13,6 +13,7 @@
 		   {% if purchase_form.errors or form.errors %}
 		   <div class="alert-danger">The data you provided has errors. Please correct them.</div>
 		   {% endif %}
+		   <div id="returns-error" class="alert-danger">Product returns can not be greater than bookings. Please correct the error to proceed.</div>
         <form action="#" method="post" role="form">
 		{{ formset.management_form }}
 		{%csrf_token%}
@@ -81,7 +82,7 @@
 	    <div class="col-md-4"></div> <!-- spacer-->
 	    <div class="col-md-4"></div> <!-- spacer-->
 	    <div class="col-md-4 padding-top-10">
-		<button type=submit class="btn btn-primary btn-large">
+		<button type=submit class="btn btn-primary btn-large" id="submit-btn">
 			Close This Booking
 		</button>
 	    </div>
@@ -112,6 +113,7 @@
 	}
 
 	$(document).ready(function(){
+		$("#returns-error").hide();
 		$("#sales-link").addClass("active");
 		$("#sales-bookings").addClass("active");
 		get_total();
@@ -122,7 +124,18 @@
 		      var unit_price_dom = $(this).parent(".returns_cell").nextAll(".unit_price");
 		      var sales = $(this).parent(".returns_cell").next(".product_sales");
 		      var unit_price = unit_price_dom.html();
-		      sales.html(bookings_input.val()-returns);
+		      var p_sales = bookings_input.val()-returns;
+		      if(p_sales < 0) { 
+		              $("#returns-error").show();
+			      $(this).addClass("has-error");
+			      $("#submit-btn").prop('disabled', true);
+			      return; }
+		      else{
+		              $("#returns-error").hide();
+			      $(this).removeClass("has-error");
+			      $("#submit-btn").prop('disabled', false);
+		      }
+		      sales.html(p_sales);
 		      var total = sales.html()*unit_price;
 		      unit_price_dom.siblings(".unit_total").html(total.toFixed(2));
 		      get_total();
