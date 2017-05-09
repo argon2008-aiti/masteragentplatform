@@ -100,7 +100,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
                                    .annotate(Count('id'))
         self.booking_dates = booking_dates
         booking_date = booking_dates[int(index)-1].get('date')
-        objects = VendorBooking.objects.filter(date=booking_date)
+        objects = VendorBooking.objects.filter(date=booking_date)[:4]
         sales_dict = {}
         sales_container = []
 
@@ -133,7 +133,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
         daily_sales_dict = {}
 
-        for sale in q_set[0].get('sales')[:4]:
+        for sale in q_set[0].get('sales'):
             product_sale_list = []
             for code in vending_products:
                 found =0
