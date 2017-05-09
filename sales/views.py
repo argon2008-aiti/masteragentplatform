@@ -133,7 +133,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
         daily_sales_dict = {}
 
-        for sale in q_set[0].get('sales'):
+        for sale in q_set[0].get('sales')[:4]:
             product_sale_list = []
             for code in vending_products:
                 found =0
