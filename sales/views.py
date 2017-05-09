@@ -112,7 +112,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
     def get_page_object(self):
         index = self.request.GET.get('page')
         if index==None:
-            return {}
+            index=1
         index = int(index)
         total_pages = len(self.booking_dates)
         page_dict = {}
