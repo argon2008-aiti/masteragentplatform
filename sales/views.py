@@ -172,7 +172,10 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
             left_margin = index - 3
             if left_margin <= 0:
-                context['page_range'] = range(1, 7+1)
+                right_margin = 7
+                if right_margin > total_pages:
+                    right_margin = total_pages
+                context['page_range'] = range(1, right_margin+1)
 
             else: 
                 right_margin = index + 3
