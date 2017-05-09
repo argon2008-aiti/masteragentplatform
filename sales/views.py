@@ -105,7 +105,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
         sales_container = []
 
         sales_dict['date'] = booking_date
-        sales_dict['sales'] = list(objects)
+        sales_dict['sales'] = objects
         sales_container.append(sales_dict)
         return sales_container
 
