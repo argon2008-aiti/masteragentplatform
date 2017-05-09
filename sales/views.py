@@ -100,7 +100,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
                                    .annotate(Count('id'))
         self.booking_dates = booking_dates
         booking_date = booking_dates[int(index)-1].get('date')
-        objects = VendorBooking.objects.filter(date=booking_date)[:4]
+        objects = VendorBooking.objects.filter(date=booking_date)
         sales_dict = {}
         sales_container = []
 
