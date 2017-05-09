@@ -163,8 +163,20 @@ class AllBookingView(LoginRequiredMixin, ListView):
             context['is_paginated'] = False
         else:
             context['is_paginated'] = True
-            context['page_range'] = range(1,total_pages+1)
             context['page_obj'] = self.get_page_object()
+
+            index = self.request.GET.get('page')
+            if index==None:
+                index=1
+            index = int(index)
+
+            left_margin = index - 5
+            if left_margin < 0:
+                context['page_range'] = range(1,total_pages+1)
+
+            else: 
+                context['page_range'] = range(index-5, index) + range(index, index+5+1)
+                
 
         return context
 
