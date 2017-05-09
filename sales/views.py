@@ -7,7 +7,8 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 from django.views import View
 from django.forms import formset_factory
-from django.db.models import Sum
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDate
 
 from forms import *
 from models import *
@@ -51,6 +52,12 @@ class NewBookingView(LoginRequiredMixin, FormView):
         if booking_form.is_valid() and formset.is_valid():
             booking_form_clean = booking_form.cleaned_data
             vendor_booking = VendorBooking()
+            existing_bookings = VendorBooking.objects.filter(date=booking_form_clean.get('date'))
+            vendors = [booking.vendor for booking in existing_bookings.all()]
+
+            if booking_form_clean.get('vendor') in vendors:
+                booking_form.add_error('vendor', "This Vendor has already been booked for the day")
+                return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
             vendor_booking.date = booking_form_clean.get('date')
             vendor_booking.vendor = booking_form_clean.get('vendor')
 
@@ -76,34 +83,57 @@ class NewBookingView(LoginRequiredMixin, FormView):
         
         else:
             return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
+
 class AllBookingView(LoginRequiredMixin, ListView):
     template_name = 'sales/all_booking.html'
     model = VendorBooking
     login_url = '/login/'
-    paginate_by = 1
+    booking_dates = []
+
 
     def get_queryset(self, **kwargs):
-        objects = VendorBooking.objects.all()
+        index = self.request.GET.get('page')
+        if index==None:
+            index = 1
+        booking_dates = VendorBooking.objects.annotate(_date=TruncDate('date'))\
+                                   .values('date')\
+                                   .annotate(Count('id'))
+        self.booking_dates = booking_dates
+        booking_date = booking_dates[int(index)-1].get('date')
+        objects = VendorBooking.objects.filter(date=booking_date)
         sales_dict = {}
         sales_container = []
 
-        for key, values in itertools.groupby(objects, key=lambda obj: obj.date):
-            sales_dict['date'] = key
-            sales_dict['sales'] = list(values)
-            sales_container.append(sales_dict)
-            sales_dict = {}
-
+        sales_dict['date'] = booking_date
+        sales_dict['sales'] = list(objects)
+        sales_container.append(sales_dict)
         return sales_container
 
+    def get_page_object(self):
+        index = self.request.GET.get('page')
+        if index==None:
+            return {}
+        index = int(index)
+        total_pages = len(self.booking_dates)
+        page_dict = {}
+        page_dict['has_previous'] = index > 1
+        page_dict['has_next'] = index < total_pages
+
+        page_dict['next_page_number'] = index + 1
+        page_dict['previous_page_number'] = index - 1
+
+        page_dict['number'] = index
+
+        return page_dict
+        
+
     def get_context_data(self, **kwargs):
-        q_set = VendorBooking.objects.all()
+        q_set = self.get_queryset()
         context = super(AllBookingView, self).get_context_data(**kwargs)
-        daily_sales = q_set.values('date').annotate(g_t=Sum('total')) \
-                          .values('date', 'g_t').order_by()
 
         daily_sales_dict = {}
 
-        for sale in q_set.order_by():
+        for sale in q_set[0].get('sales'):
             product_sale_list = []
             for code in vending_products:
                 found =0
@@ -126,6 +156,15 @@ class AllBookingView(LoginRequiredMixin, ListView):
             daily_sales_dict[sale.pk] = product_sale_list
 
         context['daily_sales_dict']   = daily_sales_dict
+
+        total_pages = len(self.booking_dates)
+
+        if total_pages < 2:
+            context['is_paginated'] = False
+        else:
+            context['is_paginated'] = True
+            context['page_range'] = range(1,total_pages+1)
+            context['page_obj'] = self.get_page_object()
 
         return context
 
@@ -266,7 +305,6 @@ class CloseBookingView(LoginRequiredMixin, FormView):
                     product_booking.returns = returns
                     product_booking.save()
                     total = total + product.unit_price*(product_booking.booking-product_booking.returns)
-                    print total
 
                 self.vendor_booking.closed = True
                 self.vendor_booking.total = total
@@ -330,5 +368,4 @@ class PayBookingView(LoginRequiredMixin, FormView):
         return super(PayBookingView, self).form_valid(form)
 
     def form_invalid(self, form):
-        print form
         return super(PayBookingView, self).form_invalid(form)
