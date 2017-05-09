@@ -208,12 +208,15 @@ class BookingUpdateView(LoginRequiredMixin, FormView):
         return context
 
     def get_initial_data(self):
-        initial_data = [
-            {'product_id': productbooking.product.id,
-             'product_code': productbooking.product.code,
-             'booking': productbooking.booking,
-             'product_name': productbooking.product.name} for productbooking in \
-                self.vendor_booking.productbooking_set.all()]
+        initial_data = []
+        for code in vending_products:
+            for p in self.vendor_booking.productbooking_set.all():
+                if p.product.code == code:
+                    initial_data.append( 
+                    {'product_id': p.product.id,
+                     'product_code': p.product.code,
+                     'booking': p.booking,
+                     'product_name': p.product.name})
         return initial_data
 
     def get(self, request, *args, **kwargs):
