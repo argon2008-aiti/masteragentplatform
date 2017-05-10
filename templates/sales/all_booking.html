@@ -17,6 +17,7 @@
                    {% for daily_sale in object_list %}
 		   <div class=day-header>
 		   <h3 class=day-name>{{daily_sale.date | date:"l, j F"}} <span class="badge purchase-count">{{daily_sale.sales|length}}</span></h3>
+		   <h3 class=day-total>GHS {{day_total|floatformat:2|intcomma}}</h3>
                    </div>
 
 		    <table class="stripe cell-border bookings-table" cellspacing="0"  width="100%">

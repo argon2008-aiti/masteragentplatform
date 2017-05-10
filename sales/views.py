@@ -97,15 +97,18 @@ class AllBookingView(LoginRequiredMixin, ListView):
             index = 1
         booking_dates = VendorBooking.objects.annotate(_date=TruncDate('date'))\
                                    .values('date')\
-                                   .annotate(Count('id'))
+                                   .annotate(Sum('amount_paid'))
+
         self.booking_dates = booking_dates
         booking_date = booking_dates[int(index)-1].get('date')
+        total = booking_dates[int(index)-1].get('amount_paid__sum')
         objects = VendorBooking.objects.filter(date=booking_date)
         sales_dict = {}
         sales_container = []
 
         sales_dict['date'] = booking_date
         sales_dict['sales'] = objects
+        sales_dict['total'] = total
         sales_container.append(sales_dict)
         return sales_container
 
@@ -156,6 +159,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
             daily_sales_dict[sale.pk] = product_sale_list
 
         context['daily_sales_dict']   = daily_sales_dict
+        context['day_total'] = q_set[0].get('total')
 
         total_pages = len(self.booking_dates)
 
