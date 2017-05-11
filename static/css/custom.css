@@ -94,6 +94,10 @@ html, body {
     padding-bottom: 50px;
 }
 
+.section-data.vendors-container {
+    background-color: #f9f9f9;
+}
+
 .section-title {
     font-size: 30px;
     margin-top: 3px;
@@ -522,6 +526,10 @@ h3.day-name {
 .vendor-phone {
     font-size: 18px;
     text-align: center;
+}
+
+.vendor-name {
+    font-weight: bold;
 }
 
 .vendor-phone {
