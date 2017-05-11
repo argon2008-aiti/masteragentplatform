@@ -518,14 +518,18 @@ h3.day-name {
     margin-bottom: 30px;
 }
 
-.vendor-name {
+.vendor-name,
+.vendor-phone {
     font-size: 18px;
     text-align: center;
 }
 
+.vendor-phone {
+    font-size: 16px;
+}
+
 .vendor-profile {
     margin-bottom: 10px;
-    width: 100%;
 }
 
 .thumbnail a>img.vendor-profile {
@@ -538,7 +542,16 @@ h3.day-name {
     margin-left: auto;
     margin-bottom: 40px;
     padding: 0;
-    box-shadow: 0px 2px 4px 0px #cecece;
+}
+
+.row.vendor-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row.vendor-list > [class*='col-'] {
+    display: flex;
+    flex-direction: row;
 }
 
 .badge.vendor-total {

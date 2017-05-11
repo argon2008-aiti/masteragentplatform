@@ -12,9 +12,20 @@
 	    </div>
 	    <div class="section-data">
 		    <div class="vendor-list row">
-			    
-		    
-		    
+			    {% for vendor in object_list %}
+			    <div class="col-xsm-6 col-sm-6 col-md-4 col-lg-3 flex-container">
+				    <div class="thumbnail">
+				        <a href="/agent/vendors/details/{{vendor.pk}}">
+					    <img class="vendor-profile" src="/{{vendor.profile.url}}" alt="">
+					    <div class="caption">
+						    
+						    <p class="vendor-name"><span class="fa fa-user"></span> {{vendor.first_name}} {{vendor.last_name}}</p>
+						    <p class="vendor-phone"><span class="fa fa-phone"></span> {{vendor.phone}}</p>
+					    </div>
+				        </a>
+				    </div>
+			    </div>
+			    {% endfor %}
 		    </div>
             </div>
     </div>
@@ -24,19 +35,7 @@
 	$(document).ready(function(){
 		$("#vendors-link").addClass("active");
 		$("#vendor-all").addClass("active");
-		$.ajax({
-	            type: 'GET',
-		    url: "{% url 'vendors:all-json'%}",	    
-		    dataType: 'json',
-		    success: function(data){
-			    $(".badge.vendor-total").html(data.length);
-			    console.log(data);
-			    $.each(data, function(i, vendor) {
-			        var link = "/agent/vendors/details/" + vendor.pk; 
-				$(".section-data > .row").append('<div class="col-xsm-6 col-sm-6 col-md-4 col-lg-3"><div class="thumbnail"><a href=' + link + '><img class=vendor-profile src=/'+vendor.fields.profile+'><div class="caption"><p class=vendor-name>'+vendor.fields.first_name+ " "+ vendor.fields.last_name+ '</p></div></div></div>')
-			    }) 
-		    }
-		})
+		$(".badge.vendor-total").html({{object_list|length}});
 	})
 </script>
 {% endblock %}

@@ -8,16 +8,15 @@ from django.views.generic.base import TemplateView, View
 from forms import VendorForm
 from models import Vendor
 
-class VendorListView(LoginRequiredMixin, TemplateView):
+class VendorListView(LoginRequiredMixin, ListView):
+    model = Vendor
     template_name = "agent/all_vendors.html"
-
 
 class VendorJSONListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         from django.core.serializers import serialize
         vendors = Vendor.objects.all()
         return HttpResponse(serialize('json', vendors))
-
 
 class VendorCreate(LoginRequiredMixin, CreateView): 
     form_class = VendorForm
