@@ -89,6 +89,9 @@ class DamageCount(models.Model):
         self.month = self.date.month
         return super(DamageCount, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['-month']
+
 class ProductDamage(models.Model):
     product = models.ForeignKey(Product)
     quantity = models.IntegerField()
