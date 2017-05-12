@@ -8,9 +8,22 @@ from django.views.generic.base import TemplateView, View
 from forms import VendorForm
 from models import Vendor
 
+from django.db.models import Avg
+
 class VendorListView(LoginRequiredMixin, ListView):
     model = Vendor
     template_name = "agent/all_vendors.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(VendorListView, self).get_context_data(**kwargs)
+        rank_dict = {}
+        rank = self.get_queryset().annotate(avg=Avg('vendorbooking__total'))\
+                                      .values('pk').order_by('-avg')
+        for index, item in enumerate(rank):
+            rank_dict[item.get('pk')]=index + 1
+
+        context['rank'] = rank_dict
+        return context
 
 class VendorJSONListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):

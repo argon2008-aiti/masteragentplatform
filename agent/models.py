@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Avg
 
 from PIL import Image
 
@@ -47,3 +48,8 @@ class Vendor(models.Model):
     def __unicode__(self):
         return self.first_name + " " + self.last_name
 
+    def get_average_sales(self):
+        avg_list = self.vendorbooking_set.filter(closed=True).aggregate(Avg('total')).values()
+        if avg_list[0] == None:
+            avg_list[0] = 0.0
+        return avg_list[0]

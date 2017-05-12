@@ -95,7 +95,7 @@ html, body {
 }
 
 .section-data.vendors-container {
-    background-color: #f9f9f9;
+    background-color: #f2f2f2;
 }
 
 .section-title {
@@ -279,6 +279,13 @@ html, body {
 hr {
     margin-top: 0px;
     margin-bottom: 0px;
+}
+
+div.card-divider {
+    height: 2px;
+    background-color: #f2f2f2;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 .banner {
@@ -540,6 +547,12 @@ h3.day-name {
     margin-bottom: 10px;
 }
 
+.vendor-rank, .vendor-average {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #fff;
+}
+
 .thumbnail a>img.vendor-profile {
     height: 200px
 }
@@ -550,6 +563,12 @@ h3.day-name {
     margin-left: auto;
     margin-bottom: 40px;
     padding: 0;
+    border: 1px solid #f2f2f2;
+    border-radius: 5px;
+}
+
+.thumbnail .caption {
+    height: 100px;
 }
 
 .row.vendor-list {
@@ -559,7 +578,11 @@ h3.day-name {
 
 .row.vendor-list > [class*='col-'] {
     display: flex;
-    flex-direction: row;
+}
+
+.sales-info-wrapper > [class*='col-'] {
+    background-color: #337ab7;
+    margin-bottom: 10px;
 }
 
 .badge.vendor-total {
