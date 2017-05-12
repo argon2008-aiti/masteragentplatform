@@ -17,7 +17,8 @@ class VendorListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(VendorListView, self).get_context_data(**kwargs)
         rank_dict = {}
-        rank = self.get_queryset().annotate(avg=Avg('vendorbooking__total'))\
+        rank = self.get_queryset().filter(vendorbooking__closed=True)\
+                                      .annotate(avg=Avg('vendorbooking__total'))\
                                       .values('pk').order_by('-avg')
         for index, item in enumerate(rank):
             rank_dict[item.get('pk')]=index + 1
