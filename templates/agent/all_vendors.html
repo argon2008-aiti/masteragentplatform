@@ -31,7 +31,7 @@
 								<p class="vendor-rank text-nowrap"><span class="fa fa-trophy"></span> {{rank|get_item:vendor.pk}} </p>
 							</div>
 							<div class="col-xs-6">
-								<p class="vendor-average text-nowrap"><span class="fa fa-shopping-cart"></span>{% if total|get_item:vendor.pk == None %} {{0.00|floatformat:2}}{% else %} {{total|get_item:vendor.pk|floatformat:2|intcomma}}{% endif %}</p>
+								<p class="vendor-month-total"><span class="fa fa-shopping-cart"></span>{% if total|get_item:vendor.pk == None %} {{0.00|floatformat:2}}{% else %} {{total|get_item:vendor.pk|floatformat:2|intcomma}}{% endif %}</p>
 							</div>
 						</div>
 				     </div>

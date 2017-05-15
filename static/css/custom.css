@@ -546,10 +546,16 @@ h3.day-name {
     margin-bottom: 10px;
 }
 
-.vendor-rank, .vendor-average {
+.vendor-rank, .vendor-month-total {
     font-size: 16px;
     margin-top: 10px;
     color: #fff;
+}
+
+.vendor-month-total {
+    width: 100px;
+    position: absolute;
+    right: -10px;
 }
 
 .thumbnail a>img.vendor-profile {
@@ -589,8 +595,12 @@ h3.day-name {
 }
 
 .sales-info-wrapper > [class*='col-'] {
-    background-color: #337ab7;
     margin-bottom: 10px;
+}
+
+.sales-info-wrapper {
+    background-color: #337ab7;
+    height: 40px;
 }
 
 .badge.vendor-total {
