@@ -8,7 +8,8 @@ from django.views.generic.base import TemplateView, View
 from forms import VendorForm
 from models import Vendor
 
-from django.db.models import Avg
+from django.db.models import Avg, Sum
+import datetime
 
 class VendorListView(LoginRequiredMixin, ListView):
     model = Vendor
@@ -17,13 +18,18 @@ class VendorListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(VendorListView, self).get_context_data(**kwargs)
         rank_dict = {}
+        total_dict = {}
+        today = datetime.date.today()
         rank = self.get_queryset().filter(vendorbooking__closed=True)\
-                                      .annotate(avg=Avg('vendorbooking__total'))\
-                                      .values('pk').order_by('-avg')
+                                      .filter(vendorbooking__date__month=today.month)\
+                                      .annotate(total=Sum('vendorbooking__total'))\
+                                      .values('pk', 'total').order_by('-total')
         for index, item in enumerate(rank):
             rank_dict[item.get('pk')]=index + 1
+            total_dict[item.get('pk')]=item.get('total')
 
         context['rank'] = rank_dict
+        context['total'] = total_dict
         return context
 
 class VendorJSONListView(LoginRequiredMixin, View):
