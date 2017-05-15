@@ -20,8 +20,7 @@ class VendorListView(LoginRequiredMixin, ListView):
         rank_dict = {}
         total_dict = {}
         today = datetime.date.today()
-        rank = self.get_queryset().filter(vendorbooking__closed=True)\
-                                      .filter(vendorbooking__date__month=today.month)\
+        rank = self.get_queryset().filter(vendorbooking__date__month=today.month)\
                                       .annotate(total=Sum('vendorbooking__total'))\
                                       .values('pk', 'total').order_by('-total')
         for index, item in enumerate(rank):
