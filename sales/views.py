@@ -15,6 +15,15 @@ from models import *
 
 from utils.models import vending_products, Product
 import itertools
+import urllib
+
+def build_url_with_parameters(*args, **kwargs):
+    get = kwargs.pop('get', {})
+    url = reverse(*args, **kwargs)
+    if get:
+        print get
+        url +='?'+urllib.urlencode(get)
+    return url
 
 class NewBookingView(LoginRequiredMixin, FormView):
     template_name = 'sales/new_booking.html'
@@ -98,6 +107,8 @@ class AllBookingView(LoginRequiredMixin, ListView):
         booking_dates = VendorBooking.objects.annotate(_date=TruncDate('date'))\
                                    .values('date')\
                                    .annotate(Sum('amount_paid'))
+
+        self.request.session['page'] = index
 
         self.booking_dates = booking_dates
         booking_date = booking_dates[int(index)-1].get('date')
@@ -260,7 +271,8 @@ class BookingUpdateView(LoginRequiredMixin, FormView):
                     product_booking.booking = new_booking
                     product_booking.save()
         
-        return HttpResponseRedirect(reverse('sales:bookings-all'))
+        return HttpResponseRedirect(build_url_with_parameters('sales:bookings-all', \
+                                                              get={'page':str(request.session.get('page', 1))}))
 
 class CloseBookingView(LoginRequiredMixin, FormView):
     template_name = 'sales/sales_closure.html'
@@ -339,7 +351,8 @@ class CloseBookingView(LoginRequiredMixin, FormView):
                 self.vendor_booking.total = total
                 self.vendor_booking.save()
         
-        return HttpResponseRedirect(reverse('sales:bookings-all'))
+        return HttpResponseRedirect(build_url_with_parameters('sales:bookings-all', \
+                                                              get={'page':request.session.get('page', 1)}))
 
 class BookingsDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'sales/booking_details.html'
@@ -360,6 +373,7 @@ class BookingsDetailView(LoginRequiredMixin, TemplateView):
 
         context['formset'] = formset
         context['booking_form'] = booking_form
+        context['current_page'] = self.request.session.get('page', 1)
         return context
 
     def get_initial_data(self):
@@ -378,7 +392,7 @@ class BookingsDetailView(LoginRequiredMixin, TemplateView):
 
 class PayBookingView(LoginRequiredMixin, FormView):
     form_class = BookingPaymentForm
-    success_url = '/sales/bookings/all'
+    success_url = ''
     template_name = 'sales/pay_booking.html'
 
     def get_initial(self):
@@ -387,6 +401,8 @@ class PayBookingView(LoginRequiredMixin, FormView):
         initial['vendor'] = VendorBooking.objects.get(pk=v_id).vendor.id
         initial['date'] = VendorBooking.objects.get(pk=v_id).date
         initial['sale_total'] = VendorBooking.objects.get(pk=v_id).total
+    
+        self.success_url = '/sales/bookings/all?page='+self.request.session.get('page', 1)
 
         return initial
 
