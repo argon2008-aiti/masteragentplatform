@@ -19,7 +19,6 @@ class VendorListView(LoginRequiredMixin, ListView):
         context = super(VendorListView, self).get_context_data(**kwargs)
         rank_dict = {}
         total_dict = {}
-        today = datetime.date.today()
         for index, item in enumerate(self.get_queryset()):
             rank_dict[item.get('pk')]=index + 1
             total_dict[item.get('pk')]=item.get('total')
@@ -29,6 +28,7 @@ class VendorListView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
+        today = datetime.date.today()
         rank = Vendor.objects.filter(vendorbooking__date__month=today.month)\
                                       .annotate(total=Sum('vendorbooking__total'))\
                                       .values('pk', 'total').order_by('-total')
