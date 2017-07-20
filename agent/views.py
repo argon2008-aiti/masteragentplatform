@@ -20,16 +20,19 @@ class VendorListView(LoginRequiredMixin, ListView):
         rank_dict = {}
         total_dict = {}
         today = datetime.date.today()
-        rank = self.get_queryset().filter(vendorbooking__date__month=today.month)\
-                                      .annotate(total=Sum('vendorbooking__total'))\
-                                      .values('pk', 'total').order_by('-total')
-        for index, item in enumerate(rank):
+        for index, item in enumerate(self.get_queryset()):
             rank_dict[item.get('pk')]=index + 1
             total_dict[item.get('pk')]=item.get('total')
 
         context['rank'] = rank_dict
         context['total'] = total_dict
         return context
+
+    def get_queryset(self):
+        rank = Vendor.objects.filter(vendorbooking__date__month=today.month)\
+                                      .annotate(total=Sum('vendorbooking__total'))\
+                                      .values('pk', 'total').order_by('-total')
+        return rank
 
 class VendorJSONListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
