@@ -86,8 +86,12 @@ LOGIN_REDIRECT_URL = '/purchases/all/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'yunguta_master_agent_platform',
+        'USER': 'yunguta',
+        'PASSWORD': 'argonical2008heliohost',
+        'HOST': 'johnny.heliohost.org',
+        'PORT': '3306',
     }
 }
 
@@ -136,6 +140,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+'''
 import dj_database_url
 if os.environ.get('DJANGO_DEVELOPMENT') is None:
     DATABASES["default"] = dj_database_url.config()
+    '''
