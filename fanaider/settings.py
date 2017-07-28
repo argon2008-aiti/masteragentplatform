@@ -87,10 +87,10 @@ LOGIN_REDIRECT_URL = '/purchases/all/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'yunguta_master_agent_platform',
-        'USER': 'yunguta',
-        'PASSWORD': 'argonical2008heliohost',
-        'HOST': 'johnny.heliohost.org',
+        'NAME': 'masterag_masteragentplatformdb',
+        'USER': 'masterag',
+        'PASSWORD': '406xg3izTI',
+        'HOST': '172.104.149.91',
         'PORT': '3306',
     }
 }
