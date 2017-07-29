@@ -275,7 +275,7 @@ class DamageCountListView(LoginRequiredMixin, ListView):
             damage_list = []
             for code in vending_products:
                 found =0
-                for product_damage in damage.productdamage_set.all():
+                for product_damage in damage.productdamage_set.select_related('product').all():
                     if product_damage.product.code == code:
                         damage_list.append(product_damage.quantity)
                         found =1

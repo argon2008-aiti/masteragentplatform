@@ -39,12 +39,9 @@ class DayPurchase(models.Model):
     class Meta:
         ordering = ['-date']
 
-    def __unicode__(self):
-        return self.shop.location + " ---- " + self.date.strftime('%m/%d/%Y')
-
     def get_total(self):
         total = 0
-        purchases = self.productpurchase_set.all()
+        purchases = self.productpurchase_set.select_related('product').all()
         for purchase in purchases:
             total = total + purchase.quantity*purchase.product.unit_price 
         return total
@@ -65,9 +62,6 @@ class ProductPurchase(models.Model):
     quantity = models.IntegerField()
     master_purchase = models.ForeignKey(DayPurchase)
 
-    def __unicode__(self):
-        return self.product.name + " ---- "+ str(self.quantity)
-
 class DamageCount(models.Model):
     shop = models.ForeignKey(Shop)
     date = models.DateField()
@@ -79,7 +73,7 @@ class DamageCount(models.Model):
 
     def get_total(self):
         total = 0
-        damages = self.productdamage_set.all()
+        damages = self.productdamage_set.select_related('product').all()
         for damage in damages:
             total = total + damage.quantity*damage.product.unit_price 
         return total
@@ -97,6 +91,4 @@ class ProductDamage(models.Model):
     quantity = models.IntegerField()
     master_damage = models.ForeignKey(DamageCount)
 
-    def __unicode__(self):
-        return self.product.name + "-------" + str(self.quantity)
 

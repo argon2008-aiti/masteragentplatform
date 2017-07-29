@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView, TemplateView
@@ -9,11 +9,12 @@ from django.views import View
 from django.forms import formset_factory
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncDate
-
+from django.forms.models import model_to_dict
 from forms import *
 from models import *
 
 from utils.models import vending_products, Product
+from purchases.models import *
 import itertools
 import urllib
 
@@ -93,6 +94,11 @@ class NewBookingView(LoginRequiredMixin, FormView):
         else:
             return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
 
+def all_booking_json(request):
+    for book in ProductBooking.objects.all():
+        print book
+    return HttpResponse(status=200)
+
 class AllBookingView(LoginRequiredMixin, ListView):
     template_name = 'sales/all_booking.html'
     model = VendorBooking
@@ -101,6 +107,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
 
     def get_queryset(self, **kwargs):
+        print "--get_page_object start"
         index = self.request.GET.get('page')
         if index==None:
             index = 1
@@ -121,9 +128,11 @@ class AllBookingView(LoginRequiredMixin, ListView):
         sales_dict['sales'] = objects
         sales_dict['total'] = total
         sales_container.append(sales_dict)
+        print "--get_queryset ended"
         return sales_container
 
     def get_page_object(self):
+        print "--get_page_object start"
         index = self.request.GET.get('page')
         if index==None:
             index=1
@@ -138,10 +147,12 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
         page_dict['number'] = index
 
+        print "--get_page_object ended"
         return page_dict
         
 
     def get_context_data(self, **kwargs):
+        print "--get_context_data start"
         q_set = self.get_queryset()
         context = super(AllBookingView, self).get_context_data(**kwargs)
 
@@ -151,7 +162,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
             product_sale_list = []
             for code in vending_products:
                 found =0
-                for product_booking in sale.productbooking_set.all():
+                for product_booking in sale.productbooking_set.select_related('product').all():
                     if product_booking.product.code == code:
                         product_sale_list.append(product_booking.booking)
                         if sale.closed == True:
@@ -200,6 +211,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
                 if left_margin <= 0:
                     left_margin=1
                 context['page_range'] = range(left_margin, index) + range(index, right_margin+1)
+        print "--get_context_data end"
         return context
 
 class BookingUpdateView(LoginRequiredMixin, FormView):
@@ -361,6 +373,7 @@ class BookingsDetailView(LoginRequiredMixin, TemplateView):
     vendor_booking = None
 
     def get_context_data(self, **kwargs):
+        print "get_context_data starting--"
         context = super(BookingsDetailView, self).get_context_data(**kwargs)
         self.vendor_booking = VendorBooking.objects.get(pk=kwargs.get('pk'))
         data = {'vendor': self.vendor_booking.vendor.id, 'date': self.vendor_booking.date}
@@ -374,9 +387,11 @@ class BookingsDetailView(LoginRequiredMixin, TemplateView):
         context['formset'] = formset
         context['booking_form'] = booking_form
         context['current_page'] = self.request.session.get('page', 1)
+        print "get_context_data ending--"
         return context
 
     def get_initial_data(self):
+        print "get_initial data --starting"
         initial_data = []
         for code in vending_products:
             for p in self.vendor_booking.productbooking_set.all():
@@ -388,6 +403,7 @@ class BookingsDetailView(LoginRequiredMixin, TemplateView):
                      'returns': p.returns,
                      'unit_price': p.product.unit_price,
                      'product_name': p.product.name})
+        print "get_initial data --end"
         return initial_data
 
 class PayBookingView(LoginRequiredMixin, FormView):
