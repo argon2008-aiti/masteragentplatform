@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -23,3 +24,9 @@ urlpatterns = [
     url(r'^vendors/', include('agent.urls', namespace='vendors')),
     url(r'^sales/', include('sales.urls', namespace='sales')),
 ] 
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
