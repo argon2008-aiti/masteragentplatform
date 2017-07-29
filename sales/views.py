@@ -107,7 +107,6 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
 
     def get_queryset(self, **kwargs):
-        print "--get_page_object start"
         index = self.request.GET.get('page')
         if index==None:
             index = 1
@@ -120,7 +119,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
         self.booking_dates = booking_dates
         booking_date = booking_dates[int(index)-1].get('date')
         total = booking_dates[int(index)-1].get('amount_paid__sum')
-        objects = VendorBooking.objects.filter(date=booking_date)
+        objects = VendorBooking.objects.filter(date=booking_date).prefetch_related('productbooking_set', 'productbooking_set__product').select_related('vendor')
         sales_dict = {}
         sales_container = []
 
@@ -128,11 +127,9 @@ class AllBookingView(LoginRequiredMixin, ListView):
         sales_dict['sales'] = objects
         sales_dict['total'] = total
         sales_container.append(sales_dict)
-        print "--get_queryset ended"
         return sales_container
 
     def get_page_object(self):
-        print "--get_page_object start"
         index = self.request.GET.get('page')
         if index==None:
             index=1
@@ -147,23 +144,23 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
         page_dict['number'] = index
 
-        print "--get_page_object ended"
         return page_dict
         
 
     def get_context_data(self, **kwargs):
-        print "--get_context_data start"
         q_set = self.get_queryset()
         context = super(AllBookingView, self).get_context_data(**kwargs)
-
         daily_sales_dict = {}
 
         for sale in q_set[0].get('sales'):
             product_sale_list = []
             for code in vending_products:
                 found =0
-                for product_booking in sale.productbooking_set.select_related('product').all():
+                print "beginning for"
+                for product_booking in sale.productbooking_set.all():
+                    print "beginning loop"
                     if product_booking.product.code == code:
+                        print product_booking
                         product_sale_list.append(product_booking.booking)
                         if sale.closed == True:
                             product_sale_list.append(product_booking.returns)
@@ -211,7 +208,6 @@ class AllBookingView(LoginRequiredMixin, ListView):
                 if left_margin <= 0:
                     left_margin=1
                 context['page_range'] = range(left_margin, index) + range(index, right_margin+1)
-        print "--get_context_data end"
         return context
 
 class BookingUpdateView(LoginRequiredMixin, FormView):

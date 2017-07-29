@@ -92,6 +92,7 @@ DATABASES = {
         'PASSWORD': '406xg3izTI',
         'HOST': '172.104.149.91',
         'PORT': '3306',
+        'CONN_MAX_AGE':None,
     }
 }
 

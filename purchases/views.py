@@ -227,9 +227,15 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
     template_name = 'purchases/all_purchases.html'
     login_url = '/login/'
 
+    def get_queryset(self, **kwargs):
+        print "beginning qs"
+        return DayPurchase.objects.prefetch_related('productpurchase_set').select_related('payment').all()
+
     def get_context_data(self, **kwargs):
+        print "beginning cd"
         month_sum_dict = {}
         q_set = self.get_queryset()
+        print "end qs"
         context = super(DayPurchaseListView, self).get_context_data(**kwargs)
         purchase_months = q_set.values('month').annotate(g_t=Sum('total')) \
                           .values('month', 'g_t').order_by()
@@ -239,12 +245,16 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
 
         context['month_sum_dict'] = month_sum_dict
 
+        print "end cd"
         return context
 
 class DamageCountListView(LoginRequiredMixin, ListView):
     model = DamageCount
     template_name = 'purchases/all_damages.html'
     login_url = '/login/'
+
+    def get_queryset(self, **kwargs):
+        return DamageCount.objects.prefetch_related('productdamage_set', 'productdamage_set__product')
 
     def get_context_data(self, **kwargs):
         month_sum_dict = {}
@@ -275,7 +285,7 @@ class DamageCountListView(LoginRequiredMixin, ListView):
             damage_list = []
             for code in vending_products:
                 found =0
-                for product_damage in damage.productdamage_set.select_related('product').all():
+                for product_damage in damage.productdamage_set.all():
                     if product_damage.product.code == code:
                         damage_list.append(product_damage.quantity)
                         found =1

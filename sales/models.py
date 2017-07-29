@@ -16,6 +16,9 @@ class VendorBooking(models.Model):
     class Meta:
         ordering= ['-date']
 
+    def __unicode__(self):
+        return self.vendor.first_name + " " + self.vendor.last_name
+
     '''
     def get_total(self):
         total = 0
