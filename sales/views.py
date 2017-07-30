@@ -413,8 +413,8 @@ class PayBookingView(LoginRequiredMixin, FormView):
         initial['vendor'] = VendorBooking.objects.get(pk=v_id).vendor.id
         initial['date'] = VendorBooking.objects.get(pk=v_id).date
         initial['sale_total'] = VendorBooking.objects.get(pk=v_id).total
-    
-        self.success_url = '/sales/bookings/all?page='+self.request.session.get('page', 1)
+
+        self.success_url = '/sales/bookings/all?page='+str(self.request.session.get('page', 1))
 
         return initial
 
