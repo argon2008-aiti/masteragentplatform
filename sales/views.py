@@ -311,7 +311,7 @@ class CloseBookingView(LoginRequiredMixin, FormView):
     def get_initial_data(self):
         initial_data = []
         for code in vending_products:
-            for p in self.vendor_booking.productbooking_set.all():
+            for p in self.vendor_booking.productbooking_set.select_related('product').all():
                 if p.product.code == code:
                     initial_data.append( 
                     {'product_id': p.product.id,
