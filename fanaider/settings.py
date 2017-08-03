@@ -137,8 +137,8 @@ USE_L10N = True
 USE_TZ = True
 
 AWS_STORAGE_BUCKET_NAME = 'bucket.masteragentplatform.s3'
-AWS_ACCESS_KEY_ID = 'AKIAJEICWOKIY24VPF3A'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIAJ5CLVUE4GTVAQXBA'
+AWS_SECRET_ACCESS_KEY = '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'
 
 # Tell django-storages that when coming up with the URL for an item in S3 storage, keep
 # it simple - just use this domain plus the path. (If this isn't set, things get complicated).
