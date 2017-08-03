@@ -554,8 +554,6 @@ h3.day-name {
 
 .vendor-month-total {
     width: 100px;
-    position: absolute;
-    right: -10px;
 }
 
 .thumbnail a>img.vendor-profile {
@@ -600,6 +598,7 @@ h3.day-name {
 
 .sales-info-wrapper {
     background-color: #337ab7;
+    padding-right: 30px;
     height: 40px;
 }
 
