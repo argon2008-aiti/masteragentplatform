@@ -41,7 +41,7 @@ class Vendor(models.Model):
     relation   = models.CharField(max_length=100)
     guarantor_phone = models.CharField(max_length=50)
 
-    profile = models.ImageField(upload_to="/profiles", blank=True, default="/profiles/default.png")
+    profile = models.ImageField(upload_to="profiles/", blank=True, default="profiles/default.png")
 
     agent       = models.ForeignKey(Agent, blank=True, null=True)
 
