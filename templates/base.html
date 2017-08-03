@@ -32,7 +32,7 @@
           <body>
 		  {% block banner %}
 		  <div class="banner">
-				  <img class=agent-logo src="/static/logo.png" alt="small logo">
+			  <img class=agent-logo src="{% static 'logo.png' %}" alt="small logo">
 				  <h2 id=agent_title>{{user.shopassistant.shop.agent.name}}{{user.agent.name}}</h2>
 			  {% if user.is_authenticated %}
          		  <div class="user dropdown">
