@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'widget_tweaks',
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
     'sales',
     'utils',
     'debug_toolbar',
-    'storages',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +86,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fanaider.wsgi.application'
 
-LOGIN_REDIRECT_URL = '/purchases/all/'
+LOGIN_REDIRECT_URL = '/sales/all/'
 
 
 # Database
@@ -96,7 +97,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'masterag_masteragentplatformdb',
         'USER': 'masterag',
-        'PASSWORD': '406xg3izTI',
+        'PASSWORD': 'argonical2008fastcomet',
         'HOST': '172.104.149.91',
         'PORT': '3306',
         'CONN_MAX_AGE':None,
@@ -136,13 +137,18 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+DEFAULT_FILE_STORAGE= 'cloudinary_storage.storage.MediaCloudinaryStorage'
+STATIC_FILES_STORAGE= 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 
 '''
 import dj_database_url
