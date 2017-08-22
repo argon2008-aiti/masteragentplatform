@@ -5,4 +5,5 @@ urlpatterns = [
     url(r'^all/$', VendorListView.as_view(), name="all"),
     url(r'^all/json$', VendorJSONListView.as_view(), name="all-json"),
     url(r'^new/$', VendorCreate.as_view(), name="new"),
+    url(r'^details/(?P<pk>\d+)/$', VendorDetailView.as_view(), name="detail"),
 ]

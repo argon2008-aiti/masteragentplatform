@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView, View
+from django.views.generic.detail import DetailView
 from forms import VendorForm
 from models import Vendor
 
@@ -34,11 +35,18 @@ class VendorListView(LoginRequiredMixin, ListView):
                                       .order_by('-total')
         return rank
 
+class VendorDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'agents/vendor_details.html'
+    model = Vendor
+    login_url = '/login/'
+
 class VendorJSONListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         from django.core.serializers import serialize
         vendors = Vendor.objects.all()
         return HttpResponse(serialize('json', vendors))
+
+
 
 class VendorCreate(LoginRequiredMixin, CreateView): 
     form_class = VendorForm
