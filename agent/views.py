@@ -36,7 +36,7 @@ class VendorListView(LoginRequiredMixin, ListView):
         return rank
 
 class VendorDetailView(LoginRequiredMixin, DetailView):
-    template_name = 'agents/vendor_details.html'
+    template_name = 'agent/vendor_details.html'
     model = Vendor
     login_url = '/login/'
 
