@@ -709,3 +709,13 @@ table.bookings-table tbody tr td {
 .input-group-btn .btn {
     height: 40px;
 }
+
+.section-data-title {
+    font-size: 24px;
+    color: #888;
+}
+
+.section-separator {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
