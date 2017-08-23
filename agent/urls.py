@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.views.generic import UpdateView
 from views import *
-from model import Vendor
+from models import Vendor
 from forms import VendorForm
 
 urlpatterns = [
