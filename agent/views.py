@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from forms import VendorForm
 from models import Vendor
+from sales.models import VendorBooking
 
 from django.db.models import Avg, Sum
 import datetime
@@ -40,12 +41,19 @@ class VendorDetailView(LoginRequiredMixin, DetailView):
     model = Vendor
     login_url = '/login/'
 
+    def get_context_data(self, **kwargs):
+        context = super(VendorDetailView, self).get_context_data(**kwargs)
+        sales = VendorBooking.objects.filter(vendor=self.object)
+        context['sales'] = sales
+        print sales
+        return context
+
 class VendorJSONListView(LoginRequiredMixin, View):
+
     def get(self, request, *args, **kwargs):
         from django.core.serializers import serialize
         vendors = Vendor.objects.all()
         return HttpResponse(serialize('json', vendors))
-
 
 
 class VendorCreate(LoginRequiredMixin, CreateView): 

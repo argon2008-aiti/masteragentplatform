@@ -14,23 +14,32 @@
 		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-4">
 			    <p class="section-data-title">Personal Information</p>
 		    </div>
+		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-8">
+		    </div>
+		</div>
 
+		<div class="row">
+		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-1">
+		    </div>
+		    
 		    <div class="col-xsm-12 col-sm-12 col-md-6 col-lg-2">
 			    <img width=150 height=150 src="{{object.profile.url}}" alt="">
 		    </div>
 
-		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-2">
+		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-3">
 			    <p><b>First Name:</b> {{object.first_name}}</p>
 			    <p><b>Phone:</b> {{object.phone}}</p>
 			    <p><b>Guarantor:</b> {{object.guarantor}}</p>
 		    </div>
-		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-3">
+		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-4">
 			    <p><b>Last Name:</b> {{object.last_name}}</p>
 			    <p><b>Hometown:</b> {{object.hometown}}</p>
 			    <p><b>Guarantor Phone:</b> {{object.guarantor_phone}}</p>
 		    </div>
 		    <div class="col-xsm-12 col-sm-12 col-md-6 col-lg-1">
 			    <a class="btn btn-primary" href="/vendors/update/{{object.pk}}">Edit</a>
+		    </div>
+		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-1">
 		    </div>
 		</div>
 		<hr class=section-separator>
@@ -39,20 +48,15 @@
 		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-4">
 			    <p class="section-data-title">Sales Statistics</p>
 		    </div>
-
-		    <div class="col-xsm-12 col-sm-12 col-md-6 col-lg-2">
-			    <img width=150 height=150 src="{{object.profile.url}}" alt="">
+		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-8">
 		    </div>
+		</div>
 
-		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-2">
-			    <p><b>First Name:</b> {{object.first_name}}</p>
-			    <p><b>Phone:</b> {{object.phone}}</p>
-			    <p><b>Guarantor:</b> {{object.guarantor}}</p>
+		<div class="row">
+		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-1">
 		    </div>
-		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-4">
-			    <p><b>Last Name:</b> {{object.last_name}}</p>
-			    <p><b>Hometown:</b> {{object.hometown}}</p>
-			    <p><b>Guarantor Phone:</b> {{object.guarantor_phone}}</p>
+		    <div class="col-xsm-12 col-sm-12 col-md-6 col-lg-11">
+			    <div id="calendar_basic" style="width: 1000px; height: 350px;"></div>
 		    </div>
 		</div>
 		<hr class=section-separator>
@@ -64,6 +68,32 @@
 		$("#vendors-link").addClass("active");
 		$("#vendor-all").addClass("active");
 	})
+
+ google.charts.load("current", {packages:["calendar"]});
+      google.charts.setOnLoadCallback(drawChart);
+
+   function drawChart() {
+       var dataTable = new google.visualization.DataTable();
+       dataTable.addColumn({ type: 'date', id: 'Date' });
+       dataTable.addColumn({ type: 'number', id: 'present/absent' });
+       dataTable.addRows
+      ([{% for sale in sales %}
+       [ new Date("{{sale.date.isoformat}}"), {{sale.total}} ],
+       {% endfor %}
+        ]);
+
+       var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+
+       var options = {
+         title: "Daily Sales Profiling",
+	 titleTextStyle: {
+		 fontSize: 2,
+	 },
+         height: 350,
+       };
+
+       chart.draw(dataTable, options);
+   }
 </script>
 
 {% endblock %}
