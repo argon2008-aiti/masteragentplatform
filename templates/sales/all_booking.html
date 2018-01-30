@@ -116,6 +116,36 @@
 				</tr>
 				{% endfor %}
 			    </tbody>
+			    <tfoot>
+				    <tr>
+				    	<td></td>
+					<td></td>
+					<td></td>
+					<td class="border-right"></td>
+					<td></td>
+					<td></td>
+					<td class="border-right"></td>
+					<td></td>
+					<td></td>
+					<td class="border-right"></td>
+					<td></td>
+					<td></td>
+					<td class="border-right"></td>
+					<td></td>
+					<td></td>
+					<td class="border-right"></td>
+					<td></td>
+					<td></td>
+					<td class="border-right"></td>
+					<td></td>
+					<td></td>
+					<td class="border-right"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				    </tr>
+			    
+			    </tfoot>
 		    </table>
 		    {% empty %}
 		    <div class="empty-query-div">
@@ -134,6 +164,22 @@
 		$("#sales-bookings").addClass("active");
 
 		var table = $(".bookings-table").DataTable({
+
+		      "footerCallback": function(row, data, start, end, display) {
+		        var api = this.api(), data;
+		        api.columns([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+					11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21])
+			      .every(function() {
+			       var sum = this
+			      .data()
+			      .reduce(function(a, b) {
+			              var x = parseFloat(a) || 0;
+			              var y = parseFloat(b) || 0;
+			              return x + y;
+			            }, 0);
+			       $(this.footer()).html(sum);
+			  });
+		      },
 	              searching: false,
 	              paging: false,	      
 	              info: false,	      

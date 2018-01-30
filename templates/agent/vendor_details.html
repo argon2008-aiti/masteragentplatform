@@ -51,12 +51,17 @@
 		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-8">
 		    </div>
 		</div>
-
-		<div class="row">
+		<div class="row sale-frequency-container">
 		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-1">
 		    </div>
 		    <div class="col-xsm-12 col-sm-12 col-md-6 col-lg-11">
-			    <div id="calendar_basic" style="width: 1000px; height: 350px;"></div>
+			    <div id="calendar_basic" style="width: 1000px; height: 200px;"></div>
+		    </div>
+		</div>
+
+		<div class="row">
+		    <div class="col-xsm-12 col-sm-12 col-md-6 col-lg-12">
+			    <div id="line_chart" style="width: 1000px; height: 50px;"></div>
 		    </div>
 		</div>
 		<hr class=section-separator>
@@ -69,7 +74,7 @@
 		$("#vendor-all").addClass("active");
 	})
 
- google.charts.load("current", {packages:["calendar"]});
+      google.charts.load("current", {packages:["calendar", "corechart"]});
       google.charts.setOnLoadCallback(drawChart);
 
    function drawChart() {
@@ -82,17 +87,33 @@
        {% endfor %}
         ]);
 
-       var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+       var calendar_chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+       var line_chart = new google.visualization.LineChart(document.getElementById('line_chart'));
 
-       var options = {
+       var calendar_options = {
          title: "Daily Sales Profiling",
 	 titleTextStyle: {
 		 fontSize: 2,
 	 },
-         height: 350,
+	 width: 1200,
+         height: 170,
        };
 
-       chart.draw(dataTable, options);
+       var line_options = {
+         title: "Daily Sales Trend",
+	 titleTextStyle: {
+		 fontSize: 24,
+		 color: "#999"
+	 },
+	 width: 1000,
+         height: 250,
+	 hAxis: {
+	     gridlines: {count: 20} 
+	 },
+       };
+
+       calendar_chart.draw(dataTable, calendar_options);
+       line_chart.draw(dataTable, line_options);
    }
 </script>
 

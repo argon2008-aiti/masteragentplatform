@@ -186,7 +186,7 @@ class NewDamageCountView(LoginRequiredMixin, FormView):
             # Everything is alright.... Begin saving.
             else: 
                 damage_count = DamageCount()
-                damage_count .shop = shop
+                damage_count.shop = shop
                 damage_count.date = damage_form.cleaned_data.get('date')
                 damage_count.save()
 

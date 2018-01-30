@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'purchases',
     'sales',
     'utils',
+    'equipment',
     'debug_toolbar',
     'cloudinary_storage',
     'cloudinary',
@@ -88,7 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fanaider.wsgi.application'
 
-LOGIN_REDIRECT_URL = '/sales/all/'
+LOGIN_REDIRECT_URL = '/sales/bookings/all/'
 
 
 # Database

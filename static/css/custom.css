@@ -393,7 +393,17 @@ tfoot>tr>th.hidden-cell {
 
 tfoot {
     background-color: #e2e2e2;
-    font-size: 18px;
+    font-size: 16px;
+}
+
+tfoot>tr>td {
+    text-align: left;
+}
+
+tfoot>tr>td.border-right {
+    text-align: center;
+    border-right: 2px solid #aaa;
+    font-weight: bold;
 }
 
 table>thead {
@@ -652,7 +662,8 @@ table.dataTable thead th {
 }
 
 table.dataTable thead th.product-label,
-table.dataTable thead th.border-right {
+table.dataTable thead th.border-right,
+{
     border-right: 2px solid #aaa;
 }
 
@@ -720,3 +731,5 @@ table.bookings-table tbody tr td {
     margin-top: 30px;
     margin-bottom: 40px;
 }
+
+.sale-frequency-container
