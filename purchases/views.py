@@ -15,6 +15,7 @@ from purchases.models import *
 
 from utils.models import vending_products
 import calendar
+import datetime
 
 class NewPurchaseView(LoginRequiredMixin, FormView):
     template_name = 'purchases/new_purchase.html'
@@ -233,8 +234,10 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         print "beginning cd"
+        year = datetime.datetime.now().year
         month_sum_dict = {}
-        q_set = self.get_queryset()
+        
+        q_set = self.get_queryset().filter('year'=year)
         print "end qs"
         context = super(DayPurchaseListView, self).get_context_data(**kwargs)
         purchase_months = q_set.values('month').annotate(g_t=Sum('total')) \
