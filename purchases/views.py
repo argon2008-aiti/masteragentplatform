@@ -230,14 +230,15 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, **kwargs):
         print "beginning qs"
-        return DayPurchase.objects.prefetch_related('productpurchase_set').select_related('payment').all()
+        year = datetime.datetime.now().year
+        q_set = objects.prefetch_related('productpurchase_set').select_related('payment').filter(date__year=year)
+        return q_set
 
     def get_context_data(self, **kwargs):
         print "beginning cd"
-        year = datetime.datetime.now().year
         month_sum_dict = {}
         
-        q_set = self.get_queryset().filter(date__year=year)
+        q_set = self.get_queryset()
         print "end qs"
         context = super(DayPurchaseListView, self).get_context_data(**kwargs)
         purchase_months = q_set.values('month').annotate(g_t=Sum('total')) \
