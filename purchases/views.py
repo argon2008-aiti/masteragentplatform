@@ -231,7 +231,7 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         print "beginning qs"
         year = datetime.datetime.now().year
-        q_set = objects.prefetch_related('productpurchase_set').select_related('payment').filter(date__year=year)
+        q_set = DayPurchase.objects.prefetch_related('productpurchase_set').select_related('payment').filter(date__year=year)
         return q_set
 
     def get_context_data(self, **kwargs):
