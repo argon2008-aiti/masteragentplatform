@@ -31,8 +31,7 @@ class VendorListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         today = datetime.date.today()
-        rank = Vendor.objects.filter(vendorbooking__date__year=today.year)\
-                                      .annotate(total=Sum('vendorbooking__total'))\
+        rank = Vendor.objects.annotate(total=Sum('vendorbooking__total'))\
                                       .order_by('-total')
         return rank
 
