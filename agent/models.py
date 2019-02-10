@@ -42,8 +42,7 @@ class Vendor(models.Model):
     guarantor_phone = models.CharField(max_length=50)
 
     profile = models.ImageField(upload_to="profiles/", blank=True, default="profiles/default.png")
-
-    agent       = models.ForeignKey(Agent, blank=True, null=True)
+    shop = models.ForeignKey(Shop)
 
     def __unicode__(self):
         return self.first_name + " " + self.last_name
