@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from forms import VendorForm
-from models import Vendor
+from models import Vendor, ShopAssistant
 from sales.models import VendorBooking
 
 from django.db.models import Avg, Sum
@@ -31,7 +31,9 @@ class VendorListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         today = datetime.date.today()
-        rank = Vendor.objects.annotate(total=Sum('vendorbooking__total'))\
+        shop_assistant = ShopAssistant.get(user=self.request.user)
+        rank = Vendor.objects.filter(shop=shop_assistant.shop)\
+                                      .annotate(total=Sum('vendorbooking__total'))\
                                       .order_by('-total')
         return rank
 
