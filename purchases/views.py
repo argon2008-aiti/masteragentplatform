@@ -233,16 +233,14 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         shop = ShopAssistant.objects.filter(user=self.request.user).shop
         year = datetime.datetime.now().year
-        q_set = DayPurchase.objects.prefetch_related('productpurchase_set')\
-            .select_related('payment').filter(date__year=year, shop=shop)
+        q_set = DayPurchase.objects.filter(shop=shop).prefetch_related('productpurchase_set')\
+            .select_related('payment').filter(date__year=year)
         return q_set
 
     def get_context_data(self, **kwargs):
-        print "beginning cd"
         month_sum_dict = {}
 
         q_set = self.get_queryset()
-        print "end qs"
         context = super(DayPurchaseListView, self).get_context_data(**kwargs)
         purchase_months = q_set.values('month').annotate(g_t=Sum('total')) \
                           .values('month', 'g_t').order_by()
@@ -252,7 +250,6 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
 
         context['month_sum_dict'] = month_sum_dict
 
-        print "end cd"
         return context
 
 class DamageCountListView(LoginRequiredMixin, ListView):
