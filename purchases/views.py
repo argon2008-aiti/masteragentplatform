@@ -330,7 +330,8 @@ class DayPurchaseDetail(LoginRequiredMixin, DetailView):
                 form_error = check_cheque(payment_form)
                 if form_error == True:
                     print "form error"
-                    return self.render_to_response(self.get_context_data(form=payment_form))
+                    return self.render_to_response(\
+                                    self.get_context_data(form=payment_form))
                 else:
                     cheque = Cheque()
                     cheque.bank = cleaned_data.get('issuing_bank')
