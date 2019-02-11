@@ -112,7 +112,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
         if index==None:
             index = 1
         booking_dates = VendorBooking.objects\
-            .filter(vendor__shop=shop)
+            .filter(vendor__shop=shop)\
             .annotate(_date=TruncDate('date'))\
                                    .values('date')\
                                    .annotate(Sum('amount_paid'))
