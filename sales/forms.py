@@ -10,7 +10,7 @@ class BookingForm(forms.Form):
         super(BookingForm, self).__init__(**kwargs)
         if user:
             shop = ShopAssistant.objects.get(user=user).shop
-            self.all_vendors.filter(shop=shop)
+            self.all_vendors = self.all_vendors.filter(shop=shop)
 
     vendor = forms.ModelChoiceField(all_vendors)
     date = forms.DateField(input_formats=('%d-%m-%Y',))
