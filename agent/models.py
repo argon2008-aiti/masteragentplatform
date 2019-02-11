@@ -44,7 +44,7 @@ class Vendor(models.Model):
 
     profile = models.ImageField(upload_to="profiles/", \
                                 blank=True, default="profiles/default.png")
-    shop = models.ForeignKey(Shop)
+    shop = models.ForeignKey(Shop, null=True)
 
     def __unicode__(self):
         return self.first_name + " " + self.last_name
