@@ -27,7 +27,7 @@ class ShopAssistant(models.Model):
 
     def __unicode__(self):
         return self.user.first_name + " " + self.user.last_name \
-            + " --  " + self.shop.agent.name
+            + " --  " + self.shop.agent.name + " " + shop.location
 
 
 class Vendor(models.Model):
