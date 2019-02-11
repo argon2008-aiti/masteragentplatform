@@ -118,6 +118,8 @@ class AllBookingView(LoginRequiredMixin, ListView):
             .annotate(_date=TruncDate('date'))\
                                    .values('date')\
                                    .annotate(Sum('amount_paid'))
+        if not booking_dates:
+            return {}
 
         self.request.session['page'] = index
 
