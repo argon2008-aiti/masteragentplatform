@@ -9,8 +9,8 @@ class BookingForm(forms.Form):
 
     def __init__(self, shop_id=1, **kwargs):
         super(BookingForm, self).__init__(**kwargs)
-        self.vendor = forms.ModelChoiceField(Vendor.objects
-                                             .filter(shop__id=shop_id))
+        self.fields['vendor'] = forms.ModelChoiceField(
+            Vendor.objects.filter(shop__id=shop_id))
 
 
 class UpdateBookingForm(forms.Form):
