@@ -258,11 +258,15 @@ class DamageCountListView(LoginRequiredMixin, ListView):
     login_url = '/login/'
 
     def get_queryset(self, **kwargs):
-        return DamageCount.objects.prefetch_related('productdamage_set', 'productdamage_set__product')
+        shop = ShopAssistant.objects.get(user=self.request.user).shop
+        return DamageCount.objects.filter(shop=shop)\
+            .prefetch_related('productdamage_set','productdamage_set__product')
 
     def get_context_data(self, **kwargs):
         month_sum_dict = {}
         q_set = self.get_queryset()
+        if not q_set:
+            return {}
         context = super(DamageCountListView, self).get_context_data(**kwargs)
         purchase_months = q_set.values('month').annotate(g_t=Sum('total')) \
                           .values('month', 'g_t').order_by()
