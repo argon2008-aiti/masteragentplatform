@@ -10,8 +10,10 @@ from django.forms import formset_factory
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncDate
 from django.forms.models import model_to_dict
+
 from forms import *
 from models import *
+from agent.models import ShopAssistant
 
 from utils.models import vending_products, Product
 from purchases.models import *
