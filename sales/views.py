@@ -160,6 +160,8 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         q_set = self.get_queryset()
+        if not q_set:
+            return {}
         context = super(AllBookingView, self).get_context_data(**kwargs)
         daily_sales_dict = {}
 
