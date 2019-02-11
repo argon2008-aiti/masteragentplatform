@@ -31,7 +31,7 @@ class VendorListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         today = datetime.date.today()
-        shop_assistant = ShopAssistant.get(user=self.request.user)
+        shop_assistant = ShopAssistant.objects.get(user=self.request.user)
         rank = Vendor.objects.filter(shop=shop_assistant.shop)\
                                       .annotate(total=Sum('vendorbooking__total'))\
                                       .order_by('-total')
@@ -57,7 +57,7 @@ class VendorJSONListView(LoginRequiredMixin, View):
         return HttpResponse(serialize('json', vendors))
 
 
-class VendorCreate(LoginRequiredMixin, CreateView): 
+class VendorCreate(LoginRequiredMixin, CreateView):
     form_class = VendorForm
     template_name = "agent/vendor_create_form.html"
 
@@ -73,7 +73,7 @@ class VendorCreate(LoginRequiredMixin, CreateView):
 
         self.object.save()
         return HttpResponseRedirect(reverse('vendors:all'))
-    
+
     def form_invalid(self, form):
         print form
         return super(VendorCreate, self).form_invalid(form)
