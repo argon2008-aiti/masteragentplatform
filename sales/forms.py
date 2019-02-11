@@ -4,13 +4,13 @@ from agent.models import ShopAssistant
 
 
 class BookingForm(forms.Form):
+    all_vendors = Vendor.objects.all()
     def __init__(self, user=None, **kwargs):
-        all_vendors = Vendor.objects.all()
         if user:
             shop = ShopAssistant.objects.filter(user=user).shop
-            all_vendors.filter(shop=shop)
+            self.all_vendors.filter(shop=shop)
 
-    vendor = forms.ModelChoiceField(all_vendors)
+    vendor = forms.ModelChoiceField(self.all_vendors)
     date = forms.DateField(input_formats=('%d-%m-%Y',))
 
 
