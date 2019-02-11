@@ -33,8 +33,8 @@ class VendorListView(LoginRequiredMixin, ListView):
         try:
             shop_assistant = ShopAssistant.objects.get(user=self.request.user)
             rank = Vendor.objects.filter(shop=shop_assistant.shop)\
-                                      .annotate(total=Sum('vendorbooking__total'))\
-                                      .order_by('-total')
+                .annotate(total=Sum('vendorbooking__total'))\
+                .order_by('-total')
         except ShopAssistant.DoesNotExist:
             rank = Vendor.objects.all()
         return rank
