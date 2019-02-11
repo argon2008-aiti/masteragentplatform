@@ -21,13 +21,13 @@ class NewPurchaseView(LoginRequiredMixin, FormView):
     template_name = 'purchases/new_purchase.html'
     form_class = ProductPurchaseForm
     login_url = '/login/'
-    
+
     def get_initial_data(self):
         products = Product.objects.all()
         product_count = products.count()
         initial_data = [
-            {'product_id': product.id, 
-             'product_code': product.code, 
+            {'product_id': product.id,
+             'product_code': product.code,
              'product_name': product.name,
              'unit_price': product.unit_price,
              'quantity': 0} for product in products]
@@ -69,9 +69,9 @@ class NewPurchaseView(LoginRequiredMixin, FormView):
                     prod_count = prod_count + 1
             if prod_count == 0:
                 form.add_error('quantity', "At least one Product must have a quantity greater than 0")
-                return self.form_invalid(formset, purchase_form) 
+                return self.form_invalid(formset, purchase_form)
             # Everything is alright.... Begin saving.
-            else: 
+            else:
                 day_purchase = DayPurchase()
                 day_purchase.shop = shop
                 day_purchase.invoice_number = purchase_form.cleaned_data.get('invoice_number')
@@ -141,13 +141,13 @@ class NewDamageCountView(LoginRequiredMixin, FormView):
     template_name = 'purchases/new_damages.html'
     form_class = DamageCountForm
     login_url = '/login/'
-    
+
     def get_initial_data(self):
         products = Product.objects.all()
         product_count = products.count()
         initial_data = [
-            {'product_id': product.id, 
-             'product_code': product.code, 
+            {'product_id': product.id,
+             'product_code': product.code,
              'product_name': product.name,
              'unit_price': product.unit_price,
              'quantity': 0} for product in products]
@@ -183,9 +183,9 @@ class NewDamageCountView(LoginRequiredMixin, FormView):
                     prod_count = prod_count + 1
             if prod_count == 0:
                 form.add_error('quantity', "At least one Product must have a quantity greater than 0")
-                return self.form_invalid(formset, damage_form) 
+                return self.form_invalid(formset, damage_form)
             # Everything is alright.... Begin saving.
-            else: 
+            else:
                 damage_count = DamageCount()
                 damage_count.shop = shop
                 damage_count.date = damage_form.cleaned_data.get('date')
@@ -237,7 +237,7 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         print "beginning cd"
         month_sum_dict = {}
-        
+
         q_set = self.get_queryset()
         print "end qs"
         context = super(DayPurchaseListView, self).get_context_data(**kwargs)
@@ -280,7 +280,7 @@ class DamageCountListView(LoginRequiredMixin, ListView):
                 percent = 0
             else:
                 percent = float(p.get('g_t')/p_total)*100
-            month_sum_dict[calendar.month_name[month]] = [p.get('g_t'), percent] 
+            month_sum_dict[calendar.month_name[month]] = [p.get('g_t'), percent]
 
         damages = self.object_list
         damages_dict = {}
@@ -324,7 +324,7 @@ class DayPurchaseDetail(LoginRequiredMixin, DetailView):
             payment_option = cleaned_data.get('payment_option')
             if payment_option == '0':
                 form_error = check_cheque(payment_form)
-                if form_error == True: 
+                if form_error == True:
                     print "form error"
                     return self.render_to_response(self.get_context_data(form=payment_form))
                 else:
@@ -336,7 +336,7 @@ class DayPurchaseDetail(LoginRequiredMixin, DetailView):
                     cheque.save()
 
                     payment = ProductPayment()
-                    payment.payment_type = 0 
+                    payment.payment_type = 0
                     payment.amount_paid = cleaned_data.get('amount_on_cheque')
                     payment.cheque = cheque
 
@@ -348,7 +348,7 @@ class DayPurchaseDetail(LoginRequiredMixin, DetailView):
                     return self.render_to_response(self.get_context_data(form=payment_form))
                 else:
                     payment = ProductPayment()
-                    payment.payment_type =1 
+                    payment.payment_type =1
                     payment.amount_paid = amount_paid
                     payment.save()
 

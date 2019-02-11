@@ -26,7 +26,8 @@ class ShopAssistant(models.Model):
     shop = models.OneToOneField(Shop)
 
     def __unicode__(self):
-        return self.user.last_name + " --  " + self.shop.agent.name
+        return self.user.first_name + " " + self.user.last_name \
+            + " --  " + self.shop.agent.name
 
 
 class Vendor(models.Model):

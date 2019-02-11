@@ -23,7 +23,7 @@ class Cheque(models.Model):
 class ProductPayment(models.Model):
     date = models.DateField(auto_now_add=True)
     time = models.TimeField(auto_now_add=True)
-    payment_type = models.IntegerField(choices=PAYMENT_TYPE, default=1) 
+    payment_type = models.IntegerField(choices=PAYMENT_TYPE, default=1)
     amount_paid = models.FloatField()
     cheque = models.ForeignKey(Cheque, null=True, blank=True)
 
@@ -43,7 +43,7 @@ class DayPurchase(models.Model):
         total = 0
         purchases = self.productpurchase_set.select_related('product').all()
         for purchase in purchases:
-            total = total + purchase.quantity*purchase.product.unit_price 
+            total = total + purchase.quantity*purchase.product.unit_price
         return total
 
     def get_payment_status(self):
@@ -58,7 +58,7 @@ class DayPurchase(models.Model):
         return super(DayPurchase, self).save(*args, **kwargs)
 
 class ProductPurchase(models.Model):
-    product = models.ForeignKey(Product) 
+    product = models.ForeignKey(Product)
     quantity = models.IntegerField()
     master_purchase = models.ForeignKey(DayPurchase)
 
@@ -75,7 +75,7 @@ class DamageCount(models.Model):
         total = 0
         damages = self.productdamage_set.select_related('product').all()
         for damage in damages:
-            total = total + damage.quantity*damage.product.unit_price 
+            total = total + damage.quantity*damage.product.unit_price
         return total
 
     def save(self, *args, **kwargs):
