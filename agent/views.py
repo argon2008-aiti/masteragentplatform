@@ -75,6 +75,7 @@ class VendorCreate(LoginRequiredMixin, CreateView):
 
         if 'shopassistants' in [group.name for group in self.request.user.groups.all()]:
             self.object.agent = self.request.user.shopassistant.shop.agent
+            self.object.shop = self.request.user.shopassistant.shop
 
         elif u'agents' in [group.name for group in self.request.user.groups.all()]:
             self.object.agent = self.request.user.agent
