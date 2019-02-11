@@ -171,7 +171,9 @@ class AllBookingView(LoginRequiredMixin, ListView):
                         product_sale_list.append(product_booking.booking)
                         if sale.closed == True:
                             product_sale_list.append(product_booking.returns)
-                            product_sale_list.append(product_booking.booking-product_booking.returns)
+                            product_sale_list\
+                                .append(product_booking.booking\
+                                        -product_booking.returns)
                         else:
                             product_sale_list.append(" ")
                             product_sale_list.append(" ")
