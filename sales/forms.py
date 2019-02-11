@@ -11,7 +11,7 @@ class BookingForm(forms.Form):
             shop = ShopAssistant.objects.get(user=user).shop
             self.all_vendors.filter(shop=shop)
 
-    vendor = forms.ModelChoiceField(all_vendors)
+    vendor = forms.ModelChoiceField(Vendor.objects.all())
     date = forms.DateField(input_formats=('%d-%m-%Y',))
 
 
