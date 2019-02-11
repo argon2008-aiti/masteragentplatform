@@ -30,11 +30,13 @@ class VendorListView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        today = datetime.date.today()
-        shop_assistant = ShopAssistant.objects.get(user=self.request.user)
-        rank = Vendor.objects.filter(shop=shop_assistant.shop)\
+        try:
+            shop_assistant = ShopAssistant.objects.get(user=self.request.user)
+            rank = Vendor.objects.filter(shop=shop_assistant.shop)\
                                       .annotate(total=Sum('vendorbooking__total'))\
                                       .order_by('-total')
+        except ShopAssistant.DoesNotExist:
+            rank = Vendor.objects.all()
         return rank
 
 class VendorDetailView(LoginRequiredMixin, DetailView):
