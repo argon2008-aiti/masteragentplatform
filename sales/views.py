@@ -56,7 +56,7 @@ class NewBookingView(LoginRequiredMixin, FormView):
         return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
 
     def post(self, request, *args, **kwargs):
-        booking_form = BookingForm(request.POST, shop_id=None)
+        booking_form = BookingForm(None, request.POST)
 
         ProductBookingFormSet = formset_factory(ProductBookingForm, extra=0)
         formset = ProductBookingFormSet(request.POST)
