@@ -8,10 +8,12 @@ from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
+
 from utils.models import Product
 from purchases.forms import *
 from django.forms import formset_factory
 from purchases.models import *
+from agent.models import ShopAssistant
 
 from utils.models import vending_products
 import calendar
