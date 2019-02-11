@@ -229,9 +229,10 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
     login_url = '/login/'
 
     def get_queryset(self, **kwargs):
-        print "beginning qs"
+        shop = ShopAssistant.objects.filter(user=self.request.user).shop
         year = datetime.datetime.now().year
-        q_set = DayPurchase.objects.prefetch_related('productpurchase_set').select_related('payment').filter(date__year=year)
+        q_set = DayPurchase.objects.prefetch_related('productpurchase_set')\
+            .select_related('payment').filter(date__year=year, shop=shop)
         return q_set
 
     def get_context_data(self, **kwargs):

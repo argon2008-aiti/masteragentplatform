@@ -42,14 +42,16 @@ class Vendor(models.Model):
     relation   = models.CharField(max_length=100)
     guarantor_phone = models.CharField(max_length=50)
 
-    profile = models.ImageField(upload_to="profiles/", blank=True, default="profiles/default.png")
+    profile = models.ImageField(upload_to="profiles/", \
+                                blank=True, default="profiles/default.png")
     shop = models.ForeignKey(Shop)
 
     def __unicode__(self):
         return self.first_name + " " + self.last_name
 
     def get_average_sales(self):
-        avg_list = self.vendorbooking_set.filter(closed=True).aggregate(Avg('total')).values()
+        avg_list = self.vendorbooking_set\
+            .filter(closed=True).aggregate(Avg('total')).values()
         if avg_list[0] == None:
             avg_list[0] = 0.0
         return avg_list[0]
