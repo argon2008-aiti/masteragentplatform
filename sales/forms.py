@@ -8,7 +8,7 @@ class BookingForm(forms.Form):
 
     def __init__(self, user=None, **kwargs):
         if user:
-            shop = ShopAssistant.objects.filter(user=user).shop
+            shop = ShopAssistant.objects.get(user=user).shop
             self.all_vendors.filter(shop=shop)
 
     vendor = forms.ModelChoiceField(all_vendors)
