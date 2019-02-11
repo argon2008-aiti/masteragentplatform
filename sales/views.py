@@ -44,7 +44,7 @@ class NewBookingView(LoginRequiredMixin, FormView):
                          'booking': 0,
                          'product_name': p.name})
         return initial_data
-    
+
 
     def get(self, request, *args, **kwargs):
         ProductBookingFormSet = formset_factory(ProductBookingForm, extra=0)
@@ -90,7 +90,7 @@ class NewBookingView(LoginRequiredMixin, FormView):
                     product_booking.master_booking = vendor_booking
                     product_booking.save()
             return HttpResponseRedirect(reverse('sales:bookings-all'))
-        
+
         else:
             return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
 
@@ -107,10 +107,13 @@ class AllBookingView(LoginRequiredMixin, ListView):
 
 
     def get_queryset(self, **kwargs):
+        shop = ShopAssistant.objects.get(user=self.request.user).shop
         index = self.request.GET.get('page')
         if index==None:
             index = 1
-        booking_dates = VendorBooking.objects.annotate(_date=TruncDate('date'))\
+        booking_dates = VendorBooking.objects\
+            .filter(vendor__shop=shop)
+            .annotate(_date=TruncDate('date'))\
                                    .values('date')\
                                    .annotate(Sum('amount_paid'))
 
@@ -119,7 +122,11 @@ class AllBookingView(LoginRequiredMixin, ListView):
         self.booking_dates = booking_dates
         booking_date = booking_dates[int(index)-1].get('date')
         total = booking_dates[int(index)-1].get('amount_paid__sum')
-        objects = VendorBooking.objects.filter(date=booking_date).prefetch_related('productbooking_set', 'productbooking_set__product').select_related('vendor')
+        objects = VendorBooking.objects\
+            .filter(date=booking_date, vendor__shop=shop)\
+            .prefetch_related('productbooking_set', \
+                              'productbooking_set__product')\
+            .select_related('vendor')
         sales_dict = {}
         sales_container = []
 
@@ -145,7 +152,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
         page_dict['number'] = index
 
         return page_dict
-        
+
 
     def get_context_data(self, **kwargs):
         q_set = self.get_queryset()
@@ -200,7 +207,7 @@ class AllBookingView(LoginRequiredMixin, ListView):
                     right_margin = total_pages
                 context['page_range'] = range(1, right_margin+1)
 
-            else: 
+            else:
                 right_margin = index + 3
                 if right_margin > total_pages:
                     left_margin = left_margin-(right_margin-total_pages)
@@ -235,7 +242,7 @@ class BookingUpdateView(LoginRequiredMixin, FormView):
         for code in vending_products:
             for p in self.vendor_booking.productbooking_set.all():
                 if p.product.code == code:
-                    initial_data.append( 
+                    initial_data.append(
                     {'product_id': p.product.id,
                      'product_code': p.product.code,
                      'booking': p.booking,
@@ -278,7 +285,7 @@ class BookingUpdateView(LoginRequiredMixin, FormView):
                     new_booking = form.cleaned_data.get('booking')
                     product_booking.booking = new_booking
                     product_booking.save()
-        
+
         return HttpResponseRedirect(build_url_with_parameters('sales:bookings-all', \
                                                               get={'page':str(request.session.get('page', 1))}))
 
@@ -313,7 +320,7 @@ class CloseBookingView(LoginRequiredMixin, FormView):
         for code in vending_products:
             for p in self.vendor_booking.productbooking_set.select_related('product').all():
                 if p.product.code == code:
-                    initial_data.append( 
+                    initial_data.append(
                     {'product_id': p.product.id,
                      'product_code': p.product.code,
                      'booking': p.booking,
@@ -333,7 +340,7 @@ class CloseBookingView(LoginRequiredMixin, FormView):
 
         SalesClosureFormSet = formset_factory(SalesClosureForm, extra=0)
         formset = SalesClosureFormSet(request.POST)
-        
+
         if formset.is_valid():
             prod_count = 0
             for form in formset:
@@ -358,7 +365,7 @@ class CloseBookingView(LoginRequiredMixin, FormView):
                 self.vendor_booking.closed = True
                 self.vendor_booking.total = total
                 self.vendor_booking.save()
-        
+
         return HttpResponseRedirect(build_url_with_parameters('sales:bookings-all', \
                                                               get={'page':request.session.get('page', 1)}))
 
@@ -392,7 +399,7 @@ class BookingsDetailView(LoginRequiredMixin, TemplateView):
         for code in vending_products:
             for p in self.vendor_booking.productbooking_set.all():
                 if p.product.code == code:
-                    initial_data.append( 
+                    initial_data.append(
                     {'product_id': p.product.id,
                      'product_code': p.product.code,
                      'booking': p.booking,
