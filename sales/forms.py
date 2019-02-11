@@ -5,6 +5,7 @@ from agent.models import ShopAssistant
 
 class BookingForm(forms.Form):
     date = forms.DateField(input_formats=('%d-%m-%Y',))
+    vendor = None
 
     def __init__(self, shop_id=1, **kwargs):
         super(BookingForm, self).__init__(**kwargs)
