@@ -30,7 +30,6 @@ def build_url_with_parameters(*args, **kwargs):
 
 class NewBookingView(LoginRequiredMixin, FormView):
     template_name = 'sales/new_booking.html'
-    form_class = BookingForm
     login_url = '/login/'
 
     def get_initial_data(self):
@@ -50,13 +49,13 @@ class NewBookingView(LoginRequiredMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         ProductBookingFormSet = formset_factory(ProductBookingForm, extra=0)
-        booking_form = BookingForm()
+        booking_form = BookingFormGet(request.user.shopassistant.shop.id)
 
         formset = ProductBookingFormSet(initial=self.get_initial_data())
         return self.render_to_response(self.get_context_data(formset=formset, booking_form=booking_form))
 
     def post(self, request, *args, **kwargs):
-        booking_form = BookingForm(request.POST)
+        booking_form = BookingFormPost(request.POST)
 
         ProductBookingFormSet = formset_factory(ProductBookingForm, extra=0)
         formset = ProductBookingFormSet(request.POST)
