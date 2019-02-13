@@ -8,7 +8,7 @@ class BookingFormGet(forms.Form):
     vendor = forms.ModelChoiceField(Vendor.objects.all())
 
     def __init__(self, shop_id=None, **kwargs):
-        super(BookingForm, self).__init__(**kwargs)
+        super(BookingFormGet, self).__init__(**kwargs)
         if shop_id:
             self.fields['vendor'] = forms.ModelChoiceField(
                 Vendor.objects.filter(shop__id=shop_id))
