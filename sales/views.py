@@ -28,7 +28,7 @@ def build_url_with_parameters(*args, **kwargs):
         url +='?'+urllib.urlencode(get)
     return url
 
-class NewBookingView(LoginRequiredMixin):
+class NewBookingView(LoginRequiredMixin, TemplateView):
     template_name = 'sales/new_booking.html'
     login_url = '/login/'
 
