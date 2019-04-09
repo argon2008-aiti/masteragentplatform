@@ -232,7 +232,7 @@ class DayPurchaseListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, **kwargs):
         shop = ShopAssistant.objects.get(user=self.request.user).shop
-        year = datetime.datetime.now().year
+        year = datetime.datetime.now().year - 1
         q_set = DayPurchase.objects.prefetch_related('productpurchase_set')\
             .select_related('payment').filter(date__year=year, shop=shop)
         return q_set
