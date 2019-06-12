@@ -11,4 +11,4 @@ class Product(models.Model):
     def __unicode__(self):
         return self.name + "(" + self.code + ")"
 
-vending_products = ['FG/000001', 'FG/000002', 'FG/000003', 'FG/000005', 'FG/000007', 'FG/000004', 'FG/000020']
+vending_products = ['FG/000001', 'FG/000002', 'FG/000003', 'FG/000005', 'FG/000007', 'FG/000004', 'FG/000020', FG/000025]
