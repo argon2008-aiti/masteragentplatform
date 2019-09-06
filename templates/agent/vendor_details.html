@@ -45,7 +45,11 @@
 		<hr class=section-separator>
 		<div>
 		    {% for sale in sales %}
+			{% if sale.closed == False %}
+			<div>
 			{{sale.date.isoformat}} >> {{sale.total}}
+			</div>
+			{% endif %}
 			{% endfor %}
 		</div>
             </div>
