@@ -47,7 +47,7 @@
 		<div>
 		    {% for sale in sales %}
 			{% if sale.closed == False %}
-			<div>
+			<div style="margin-bottom: 20px;">
 			{{sale.date.isoformat}} 
 			<span style="margin-left: 50px;">
 				<a class="btn btn-danger" style="display: inline;" href="/sales/bookings/close/{{sale.pk}}">Close</a>
