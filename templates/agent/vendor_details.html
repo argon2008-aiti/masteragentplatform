@@ -42,12 +42,14 @@
 		    <div class="col-xsm-12 col-sm-6 col-md-6 col-lg-1">
 		    </div>
 		</div>
-		<hr class=section-separator>
+		<hr class=section-separator>    
+	        <p class="section-data-title">Personal Information</p>
 		<div>
 		    {% for sale in sales %}
 			{% if sale.closed == False %}
 			<div>
-			{{sale.date.isoformat}} >> {{sale.total}}
+			{{sale.date.isoformat}} 
+		        <a class="btn btn-danger" href="/sales/bookings/close/{{sale.pk}}">Close</a>
 			</div>
 			{% endif %}
 			{% endfor %}
