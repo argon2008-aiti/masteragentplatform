@@ -43,6 +43,11 @@
 		    </div>
 		</div>
 		<hr class=section-separator>
+		<div>
+		    {% for sale in sales %}
+			{{sale.date.isoformat}} >> {{sale.total}}
+			{% endfor %}
+		</div>
             </div>
     </div>
 </div>
