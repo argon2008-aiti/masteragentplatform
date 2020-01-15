@@ -1,220 +1,214 @@
-{% extends "base.html" %}
-{% load widget_tweaks %}
-{% load humanize %}
-{% load dict_filter %}
-{% load list_filter %}
-{% block subnav %}
-{% include "sales_subnav.html" %}
-{% endblock %}
-{% block contents %}
+{% extends "base.html" %} {% load widget_tweaks %} {% load humanize %} {% load dict_filter %} {% load list_filter %} {% block subnav %} {% include "sales_subnav.html" %} {% endblock %} {% block contents %}
 <div class="container main-contents booking-container">
     <div class="section">
-	    <div class="section-header">
-	          <p class="section-title">Bookings</p>
-		  <div class="pagination-container ">{% include "sales/booking_pagination.html" %}</div>
-	    </div>
-	    <div class="section-data booking-list">
-                   {% for daily_sale in object_list %}
-		   <div class=day-header>
-		   <h3 class=day-name>{{daily_sale.date | date:"l, j F"}} <span class="badge purchase-count">{{daily_sale.sales|length}}</span></h3>
-		   <h3 class=day-total>GHS {{day_total|floatformat:2|intcomma}}</h3>
-                   </div>
-
-		    <table class="stripe cell-border bookings-table" cellspacing="0"  width="100%">
-			    <thead>
-				<tr>
-					<th></th>
-					<th colspan=3 class="product-label">FANYOGO Pouch</th>
-					<th colspan=3 class="product-label">FANCHOCO Pouch</th>
-					<th colspan=3 class="product-label">FANICE Pouch</th>
-					<th colspan=3 class="product-label">FANDANGO Pouch</th>
-					<th colspan=3 class="product-label">FANDANGO 500ml</th>
-					<th colspan=3 class="product-label">FANPOP</th>
-					<th colspan=3 class="product-label">FANYOGO MP</th>
-					<th colspan=3 class="product-label">FANMAXX</th>
-					<th colspan=3 class="product-label">SUPER YOGO</th>
-					<th></th>
-					<th></th>
-					<th></th>
-				</tr>
-				<tr>
-					<th>VENDOR</th>
-
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-					
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-					
-					<th>bookings</th>
-					<th>returns</th>
-					<th class="border-right">sales</th>
-
-
-
-					<th>TOTAL</th>
-					<th></th>
-					<th></th>
-
-				</tr>
-			    </thead>
-			    <tbody>
-				    {% for sale in daily_sale.sales %}
-				<tr>
-					<td class="vendor-cell">{{sale}}</td>
-				        {% with v_booking=sale.pk %}
-					{% for item in daily_sales_dict|get_item:v_booking %}
-					<td {% if forloop.counter|divisibleby:3 %}class="sale"{% endif %}>{{item}}</td>
-					{% endfor %}
-					<td class="sales-total">{{sale.total|floatformat:2}}</td>
-					<td>
-						{% if sale.closed %}
-						    {% if sale.paid %}
-						        <a href="/sales/bookings/view/{{v_booking}}" class="input_link">
-						        <input type="button" class="btn btn-primary" value=View>
-						        </a>
-						    {% else %}
-						        <a href="/sales/bookings/close/{{v_booking}}" class="input_link">
-						        <input type="button" class="btn btn-primary" value=Edit>
-						    {% endif %}
-						{% else %}
-						<a href="/sales/bookings/edit/{{v_booking}}" class="input_link">
-						<input type="button" class="btn btn-primary" value=Edit>
-						</a>
-						{% endif %}
-					</td>
-					<td>
-						{% if sale.closed  %}
-						    {% if sale.paid %}
-						        <input type="button" class="btn btn-success" value=Paid disabled>
-						    {% else %}
-							<a href="/sales/bookings/pay/{{v_booking}}" class="input_link">
-							<input type="button" class="btn btn-warning" value=Pay>
-							</a>
-						    {% endif %}
-						{% else %}
-						<a href="/sales/bookings/close/{{v_booking}}" class="input_link">
-						<input type="button" class="btn btn-danger" value=Close>
-						</a>
-						{% endif %}
-					</td>
-					{% endwith %}
-				</tr>
-				{% endfor %}
-			    </tbody>
-			    <tfoot>
-				    <tr>
-				    	<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td class="border-right"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				    </tr>
-			    
-			    </tfoot>
-		    </table>
-		    {% empty %}
-		    <div class="empty-query-div">
-		    <h1 class="empty-query-string">There are no Bookings to show!</h1>
-		    </div>
-		    {% endfor %}
+        <div class="section-header">
+            <p class="section-title">Bookings</p>
+            <div class="pagination-container ">{% include "sales/booking_pagination.html" %}</div>
+        </div>
+        <div class="section-data booking-list">
+            {% for daily_sale in object_list %}
+            <div class=day-header>
+                <h3 class=day-name>{{daily_sale.date | date:"l, j F"}} <span class="badge purchase-count">{{daily_sale.sales|length}}</span></h3>
+                <h3 class=day-total>GHS {{day_total|floatformat:2|intcomma}}</h3>
             </div>
+
+            <table class="stripe cell-border bookings-table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th colspan=3 class="product-label">FANYOGO Pouch</th>
+                        <th colspan=3 class="product-label">FANCHOCO Pouch</th>
+                        <th colspan=3 class="product-label">FANICE Pouch</th>
+                        <th colspan=3 class="product-label">FANDANGO Pouch</th>
+                        <th colspan=3 class="product-label">FANDANGO 500ml</th>
+                        <th colspan=3 class="product-label">FANPOP</th>
+                        <th colspan=3 class="product-label">FANYOGO MP</th>
+                        <th colspan=3 class="product-label">FANMAXX</th>
+                        <th colspan=3 class="product-label">SUPER YOGO</th>
+                        <th colspan=3 class="product-label">FANVANILLE Pouch</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>VENDOR</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+                        <th>bookings</th>
+                        <th>returns</th>
+                        <th class="border-right">sales</th>
+
+
+
+                        <th>TOTAL</th>
+                        <th></th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in daily_sale.sales %}
+                    <tr>
+                        <td class="vendor-cell">{{sale}}</td>
+                        {% with v_booking=sale.pk %} {% for item in daily_sales_dict|get_item:v_booking %}
+                        <td {% if forloop.counter|divisibleby:3 %}class="sale" {% endif %}>{{item}}</td>
+                        {% endfor %}
+                        <td class="sales-total">{{sale.total|floatformat:2}}</td>
+                        <td>
+                            {% if sale.closed %} {% if sale.paid %}
+                            <a href="/sales/bookings/view/{{v_booking}}" class="input_link">
+                                <input type="button" class="btn btn-primary" value=View>
+                            </a>
+                            {% else %}
+                            <a href="/sales/bookings/close/{{v_booking}}" class="input_link">
+                                <input type="button" class="btn btn-primary" value=Edit> {% endif %} {% else %}
+                                <a href="/sales/bookings/edit/{{v_booking}}" class="input_link">
+                                    <input type="button" class="btn btn-primary" value=Edit>
+                                </a>
+                                {% endif %}
+                        </td>
+                        <td>
+                            {% if sale.closed %} {% if sale.paid %}
+                            <input type="button" class="btn btn-success" value=Paid disabled> {% else %}
+                            <a href="/sales/bookings/pay/{{v_booking}}" class="input_link">
+                                <input type="button" class="btn btn-warning" value=Pay>
+                            </a>
+                            {% endif %} {% else %}
+                            <a href="/sales/bookings/close/{{v_booking}}" class="input_link">
+                                <input type="button" class="btn btn-danger" value=Close>
+                            </a>
+                            {% endif %}
+                        </td>
+                        {% endwith %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                </tfoot>
+            </table>
+            {% empty %}
+            <div class="empty-query-div">
+                <h1 class="empty-query-string">There are no Bookings to show!</h1>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
-{% endblock %}
-{% block footer %}
-{% include "footer.html" %}
+{% endblock %} {% block footer %} {% include "footer.html" %}
 <script type="text/javascript">
-	$(document).ready(function(){
-		$("#sales-link").addClass("active");
-		$("#sales-bookings").addClass("active");
+    $(document).ready(function() {
+        $("#sales-link").addClass("active");
+        $("#sales-bookings").addClass("active");
 
-		var table = $(".bookings-table").DataTable({
+        var table = $(".bookings-table").DataTable({
 
-		      "footerCallback": function(row, data, start, end, display) {
-		        var api = this.api(), data;
-		        api.columns([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-					11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21])
-			      .every(function() {
-			       var sum = this
-			      .data()
-			      .reduce(function(a, b) {
-			              var x = parseFloat(a) || 0;
-			              var y = parseFloat(b) || 0;
-			              return x + y;
-			            }, 0);
-			       $(this.footer()).html(sum);
-			  });
-		      },
-	              searching: false,
-	              paging: false,	      
-	              info: false,	      
-		      scrollX: true,
-		      scrollCollapse: true,
-		      fixedColumns: {
-		         leftColumns: 1,
-			 rightColumns: 3 
-		      },
-		      columnDefs:[{
-			 targets: [-1, -2],
-			 orderable: false
-		      }]
-		});
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api(),
+                    data;
+                api.columns([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                        11, 12, 13, 14, 15, 16, 17, 18, 19,
+                        20, 21, 22, 23, 24, 25, 26, 27, 28,
+                        29, 30
+                    ])
+                    .every(function() {
+                        var sum = this
+                            .data()
+                            .reduce(function(a, b) {
+                                var x = parseFloat(a) || 0;
+                                var y = parseFloat(b) || 0;
+                                return x + y;
+                            }, 0);
+                        $(this.footer()).html(sum);
+                    });
+            },
+            searching: false,
+            paging: false,
+            info: false,
+            scrollX: true,
+            scrollCollapse: true,
+            fixedColumns: {
+                leftColumns: 1,
+                rightColumns: 3
+            },
+            columnDefs: [{
+                targets: [-1, -2],
+                orderable: false
+            }]
+        });
 
-		("#booking-box")
-	})
+        ("#booking-box")
+    })
 </script>
 {% endblock %}
-
